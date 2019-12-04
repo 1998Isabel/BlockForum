@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './css/bootstrap.min.css';
+import { Provider } from 'react-redux';
+import store from './store';
 import Header from './containers/Header';
 import Body from './containers/Banner';
 import CreatePost from './components/CreatePost';
@@ -11,7 +12,7 @@ import HomePage from './containers/HomePage';
 class App extends Component {
   render() {
     return (
-      <>
+      <Provider store={store}>
         <Header />
         <div className="container" style={{ marginTop: "70px" }}>
           <Body />
@@ -26,7 +27,7 @@ class App extends Component {
             </div>
           </div>
         </div>
-      </>
+      </Provider>
     );
   }
 }

@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import './../css/bootstrap.min.css';
+import { connect } from 'react-redux';
+import { getPosts, addPost, deletePost } from '../actions/postActions';
+import PropTypes from 'prop-types';
 import PostCard from '../components/PostCard';
 
-var posts = ["First", "Second", "Third", "Forth"]
-
 class HomePage extends Component {
-	posts = posts.map((p, index) => {
+	posts = this.props.posts.map((p, index) => {
 		return (
 			<div>
-				<PostCard key={index}/>
+				<PostCard key={index} post={p}/>
 			</div>
 		)
 	})
@@ -23,4 +23,8 @@ class HomePage extends Component {
 	}
 }
 
-export default HomePage;
+const mapStateToProps = (state) => ({
+    posts: state.posts
+});
+
+export default connect(mapStateToProps, { getPosts, addPost, deletePost })(HomePage);
