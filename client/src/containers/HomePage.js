@@ -5,26 +5,32 @@ import PropTypes from 'prop-types';
 import PostCard from '../components/PostCard';
 
 class HomePage extends Component {
-	posts = this.props.posts.map((p, index) => {
-		return (
-			<div>
-				<PostCard key={index} post={p}/>
-			</div>
-		)
-	})
+	componentDidMount() {
+        this.props.getPosts();
+    }
 
 	render() {
+		const { posts } = this.props.post
+		console.log(posts)
+		const postlist = this.props.post.posts.map((p, index) => {
+			return (
+				<div>
+					<PostCard key={index} post={p}/>
+				</div>
+			)
+		})
+		
 		return (
 			<div>
 				<h5>Posts</h5>
-				{this.posts}
+				{postlist}
 			</div>
 		);
 	}
 }
 
 const mapStateToProps = (state) => ({
-    posts: state.posts
+    post: state.post
 });
 
 export default connect(mapStateToProps, { getPosts, addPost, deletePost })(HomePage);

@@ -6,19 +6,20 @@ import {
     POSTS_LOADING } from './types';
 
 export const getPosts = () => dispatch => {
-    dispatch(setPostsLoading());
+    dispatch(setpostsLoading());
     axios
-        .get('/api/POSTS')
-        .then(res => 
+        .get('/posts')
+        .then(res => {
+            // console.log(res.data)
             dispatch({
                 type: GET_POSTS,
                 payload: res.data
-            }));
+            })});
 };
 
 export const addPost = POST => dispatch => {
     axios
-        .post('/api/POSTS', POST)
+        .post('/posts', POST)
         .then(res => 
             dispatch({
                 type: ADD_POST,
@@ -27,7 +28,7 @@ export const addPost = POST => dispatch => {
 };
 
 export const deletePost = id => dispatch => {
-    axios.delete(`/api/POSTS/${id}`)
+    axios.delete(`/posts/${id}`)
         .then(res => 
             dispatch({
                 type: DELETE_POST,
@@ -35,7 +36,7 @@ export const deletePost = id => dispatch => {
             }));
 };
 
-export const setPostsLoading = () => {
+export const setpostsLoading = () => {
     return {
         type: POSTS_LOADING
     };

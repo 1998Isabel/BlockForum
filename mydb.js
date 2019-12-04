@@ -15,7 +15,7 @@ const categories = [
 const posts = [
   {
     id: 1,
-    cat: 1,
+    category: 1,
     title: "Post1",
     content: "This is the first post!"
   }
