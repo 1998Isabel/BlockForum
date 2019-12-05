@@ -6,16 +6,21 @@ const app = express();
 app.use(express.json());
 
 // Users METHODS
+
 app.get("/user/:addr", (req, res) => {
   const user = db.users.filter(user => user.addr === req.params.addr);
-  res.json(user);
+  // user = contract ....
+  res.json(user); // return
 });
 
-// Posts METHODS
+// Posts METHODS 
+// Get
 app.get("/posts", (req, res) => {
+    // post = contract ....
   res.json(db.posts);
 });
 
+// Add 
 app.post("/posts", (req, res) => {
   const newPost = {
     id: req.body.id,
@@ -23,11 +28,13 @@ app.post("/posts", (req, res) => {
     title: req.body.title,
     content: req.body.content
   };
-
+  // contract.methods.addPost ....
   db.posts.unshift(newPost);
+  
   res.json(newPost);
 });
 
+// Delete
 app.delete("/posts/:id", (req, res) => {
   db.posts = db.posts.filter(post => post.id !== req.params.id);
   res.json(db.posts);
@@ -35,6 +42,7 @@ app.delete("/posts/:id", (req, res) => {
 
 // Categories METHODS
 app.get("/categories", (req, res) => {
+  // 
   res.json(db.categories);
 });
 
