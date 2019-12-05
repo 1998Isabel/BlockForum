@@ -1,25 +1,84 @@
 import React, { Component } from 'react';
 import './../css/bootstrap.min.css';
+import uuid from "uuid";
+import { connect } from 'react-redux';
+import { addPost } from '../actions/postActions';
+import { Button, Modal, Form } from 'react-bootstrap';
 
 class CreatePost extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			show: false,
+			title: "",
+			content: "",
+			category: "News",
+		};
+	}
+	handleShow = () => this.setState({ show: true });
+	handleClose = () => this.setState({ show: false });
+	changeTitle = (event) => this.setState({ title: event.target.value });
+	changeContent = (event) => this.setState({ content: event.target.value });
+	changeCategory = (event) => this.setState({ category: event.target.value});
+	handleSubmit = () => {
+		console.log(uuid.v1());
+		this.props.addPost({
+			id: uuid.v1(),
+			category: this.state.category,
+			title: this.state.title,
+			content: this.state.content,
+		});
+		this.handleClose()
+	}
+
 	render() {
+		const { show } = this.state;
 		return (
 			<div>
 				<h5>Create Post</h5>
 				<form>
 					<div className="form-group">
-						<div class="input-group mb-3">
+						<div className="input-group mb-3" onClick={this.handleShow}>
 							<input type="text" className="form-control" placeholder="Say something..." aria-label="Recipient's username" aria-describedby="button-addon2" />
-							<div class="input-group-append">
-								<button class="btn btn-outline-secondary" type="button" id="button-addon2">Post</button>
+							<div className="input-group-append">
+								<button className="btn btn-outline-secondary" type="button" id="button-addon2">Post</button>
 							</div>
 						</div>
-						{/* <div class="input-group mb-3">
-							<div class="custom-file">
-								<input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" />
-								<label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-							</div>
-						</div> */}
+						<Modal show={show} onHide={this.handleClose}>
+							<Modal.Header closeButton>
+								<Modal.Title>Create Post</Modal.Title>
+							</Modal.Header>
+							<Modal.Body>
+								<Form>
+									<Form.Group controlId="ControlInput1">
+										<Form.Label>Title</Form.Label>
+										<Form.Control type="text" onChange={this.changeTitle}/>
+									</Form.Group>
+									<Form.Group controlId="ControlSelect1">
+										<Form.Label>Select category</Form.Label>
+										<Form.Control as="select" onChange={this.changeCategory}>
+											<option>1</option>
+											<option>2</option>
+											<option>3</option>
+											<option>4</option>
+											<option>5</option>
+										</Form.Control>
+									</Form.Group>
+									<Form.Group controlId="ControlTextarea1">
+										<Form.Label>Content</Form.Label>
+										<Form.Control as="textarea" rows="3" onChange={this.changeContent}/>
+									</Form.Group>
+								</Form>
+							</Modal.Body>
+							<Modal.Footer>
+								<Button variant="secondary" onClick={this.handleClose}>
+									Cancel
+          						</Button>
+								<Button variant="primary" onClick={this.handleSubmit}>
+									Submit
+          						</Button>
+							</Modal.Footer>
+						</Modal>
 					</div>
 				</form>
 			</div>
@@ -27,4 +86,8 @@ class CreatePost extends Component {
 	}
 }
 
-export default CreatePost;
+const mapStateToProps = (state) => ({
+    post: state.post
+});
+
+export default connect(mapStateToProps, { addPost })(CreatePost);

@@ -1,33 +1,33 @@
 import { 
-    GET_POSTS, 
-    ADD_POST, 
-    DELETE_POST, 
-    POSTS_LOADING } from '../actions/types';
+    GET_CATEGORYS, 
+    ADD_CATEGORY, 
+    DELETE_CATEGORY, 
+    CATEGORYS_LOADING } from '../actions/types';
 
 const initialState = {
-    posts: [],
+    categories: [],
     loading: false
 }
 
 export default function(state = initialState, action) {
     switch(action.type) {
-        case GET_POSTS:
+        case GET_CATEGORYS:
             return {
                 ...state,
-                posts: action.payload,
+                CATEGORYs: action.payload,
                 loading: false
             };
-        case ADD_POST:
+        case ADD_CATEGORY:
             return {
                 ...state,
-                posts: [action.payload, ...state.posts]
+                categories: [action.payload, ...state.CATEGORYS]
             };
-        case DELETE_POST:
+        case DELETE_CATEGORY:
             return {
                 ...state,
-                posts: state.posts.filter(POST => POST.id !== action.payload)
+                posts: state.posts.filter(category => category.id !== action.payload)
             };  
-        case POSTS_LOADING:
+        case CATEGORYS_LOADING:
             return {
                 ...state,
                 loading: true

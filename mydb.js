@@ -6,36 +6,29 @@ const users = [
 ];
 
 const categories = [
-  {
-    id: 1,
-    name: "All"
-  },
-  {
-    id: 2,
-    name: "Music"
-  },
-  {
-    id: 3,
-    name: "News"
-  }
+  "News",
+  "International",
+  "Sports",
+  "Entertainment",
+  "Economics",
 ];
 
 const posts = [
   {
-    id: 1,
-    category: 1,
+    id: "1",
+    category: "Economics",
     title: "Post1",
     content: "This is the first post!"
   },
   {
-    id: 2,
-    category: 2,
+    id: "2",
+    category: "Sports",
     title: "Post2",
     content: "This is the 2nd post!"
   },
   {
-    id: 3,
-    category: 1,
+    id: "3",
+    category: "News",
     title: "Post3",
     content: "This is the 3rd post!"
   }

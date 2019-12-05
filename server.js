@@ -24,12 +24,12 @@ app.post("/posts", (req, res) => {
     content: req.body.content
   };
 
-  db.posts.push(newPost);
+  db.posts.unshift(newPost);
   res.json(newPost);
 });
 
 app.delete("/posts/:id", (req, res) => {
-  db.posts = db.posts.filter(post => post.id !== parseInt(req.params.id));
+  db.posts = db.posts.filter(post => post.id !== req.params.id);
   res.json(db.posts);
 });
 
@@ -50,7 +50,7 @@ app.post("/categories", (req, res) => {
 
 app.delete("/categories/:id", (req, res) => {
   db.categories = db.categories.filter(
-    category => category.id !== parseInt(req.params.id)
+    category => category.id !== req.params.id
   );
   res.json(db.categories);
 });

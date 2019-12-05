@@ -1,43 +1,43 @@
 import axios from 'axios';
 import { 
-    GET_POSTS, 
-    ADD_POST, 
-    DELETE_POST, 
-    POSTS_LOADING } from './types';
+    GET_CATEGORYS, 
+    ADD_CATEGORY, 
+    DELETE_CATEGORY, 
+    CATEGORYS_LOADING } from './types';
 
 export const getPosts = () => dispatch => {
-    dispatch(setpostsLoading());
+    dispatch(setcategoriesLoading());
     axios
-        .get('/posts')
+        .get('/categories')
         .then(res => {
             // console.log(res.data)
             dispatch({
-                type: GET_POSTS,
+                type: GET_CATEGORYS,
                 payload: res.data
             })});
 };
 
-export const addPost = post => dispatch => {
+export const addPost = category => dispatch => {
     axios
-        .post('/posts', post)
+        .post('/categories', category)
         .then(res => 
             dispatch({
-                type: ADD_POST,
+                type: ADD_CATEGORY,
                 payload: res.data
             }));
 };
 
 export const deletePost = id => dispatch => {
-    axios.delete(`/posts/${id}`)
+    axios.delete(`/categories/${id}`)
         .then(res => 
             dispatch({
-                type: DELETE_POST,
+                type: DELETE_CATEGORY,
                 payload: id
             }));
 };
 
-export const setpostsLoading = () => {
+export const setcategoriesLoading = () => {
     return {
-        type: POSTS_LOADING
+        type: CATEGORYS_LOADING
     };
 };

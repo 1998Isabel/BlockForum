@@ -1,25 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getPosts, addPost, deletePost } from '../actions/postActions';
-import PropTypes from 'prop-types';
 import PostCard from '../components/PostCard';
 
 class HomePage extends Component {
 	componentDidMount() {
-        this.props.getPosts();
-    }
+		this.props.getPosts();
+	}
 
 	render() {
 		const { posts } = this.props.post
 		console.log(posts)
 		const postlist = this.props.post.posts.map((p, index) => {
 			return (
-				<div>
-					<PostCard key={index} post={p}/>
-				</div>
+				<PostCard key={index} post={p} />
 			)
 		})
-		
+
 		return (
 			<div>
 				<h5>Posts</h5>
@@ -30,7 +27,7 @@ class HomePage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    post: state.post
+	post: state.post
 });
 
 export default connect(mapStateToProps, { getPosts, addPost, deletePost })(HomePage);
