@@ -3,6 +3,7 @@ import './../css/bootstrap.min.css';
 import uuid from "uuid";
 import { connect } from 'react-redux';
 import { addPost } from '../actions/postActions';
+import { getCategories } from '../actions/categoryActions';
 import { Button, Modal, Form } from 'react-bootstrap';
 
 class CreatePost extends Component {
@@ -15,6 +16,11 @@ class CreatePost extends Component {
 			category: "News",
 		};
 	}
+
+	componentDidMount() {
+		this.props.getCategories();
+	}
+
 	handleShow = () => this.setState({ show: true });
 	handleClose = () => this.setState({ show: false });
 	changeTitle = (event) => this.setState({ title: event.target.value });
@@ -33,6 +39,8 @@ class CreatePost extends Component {
 
 	render() {
 		const { show } = this.state;
+		const categoryOption = this.props.category.categories.map(c => (<option>{c}</option>))
+
 		return (
 			<div>
 				<h5>Create Post</h5>
@@ -57,11 +65,12 @@ class CreatePost extends Component {
 									<Form.Group controlId="ControlSelect1">
 										<Form.Label>Select category</Form.Label>
 										<Form.Control as="select" onChange={this.changeCategory}>
-											<option>1</option>
+											{/* <option>1</option>
 											<option>2</option>
 											<option>3</option>
 											<option>4</option>
-											<option>5</option>
+											<option>5</option> */}
+											{categoryOption}
 										</Form.Control>
 									</Form.Group>
 									<Form.Group controlId="ControlTextarea1">
@@ -87,7 +96,7 @@ class CreatePost extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    post: state.post
+    category: state.category
 });
 
-export default connect(mapStateToProps, { addPost })(CreatePost);
+export default connect(mapStateToProps, { addPost, getCategories })(CreatePost);

@@ -1,23 +1,23 @@
 import axios from 'axios';
 import { 
-    GET_CATEGORYS, 
+    GET_CATEGORIES, 
     ADD_CATEGORY, 
     DELETE_CATEGORY, 
-    CATEGORYS_LOADING } from './types';
+    CATEGORIES_LOADING } from './types';
 
-export const getPosts = () => dispatch => {
-    dispatch(setcategoriesLoading());
+export const getCategories = () => dispatch => {
+    dispatch(setCategoriesLoading());
     axios
         .get('/categories')
         .then(res => {
             // console.log(res.data)
             dispatch({
-                type: GET_CATEGORYS,
+                type: GET_CATEGORIES,
                 payload: res.data
             })});
 };
 
-export const addPost = category => dispatch => {
+export const addCategory = category => dispatch => {
     axios
         .post('/categories', category)
         .then(res => 
@@ -27,7 +27,7 @@ export const addPost = category => dispatch => {
             }));
 };
 
-export const deletePost = id => dispatch => {
+export const deleteCategory = id => dispatch => {
     axios.delete(`/categories/${id}`)
         .then(res => 
             dispatch({
@@ -36,8 +36,8 @@ export const deletePost = id => dispatch => {
             }));
 };
 
-export const setcategoriesLoading = () => {
+export const setCategoriesLoading = () => {
     return {
-        type: CATEGORYS_LOADING
+        type: CATEGORIES_LOADING
     };
 };
