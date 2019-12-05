@@ -1,49 +1,35 @@
 import React, { Component } from 'react';
 import './../css/bootstrap.min.css';
-
-var topics = [
-	{
-		name: "News",
-		postnum: 4,
-	},
-	{
-		name: "International",
-		postnum: 18,
-	},
-	{
-		name: "Sports",
-		postnum: 20,
-	},
-	{
-		name: "Entertainment",
-		postnum: 5,
-	},
-	{
-		name: "Economics",
-		postnum: 9,
-	}
-]
+import { connect } from 'react-redux';
+import { getCategories } from '../actions/categoryActions';
 
 class Side extends Component {
-	sidelist = topics.map((t, index) => {
-		return (
-			<li key={index} className="list-group-item d-flex justify-content-between align-items-center">
-				{t.name}
-				<span className="badge badge-primary badge-pill">{t.postnum}</span>
-			</li>
-		)
-	})
+	componentDidMount() {
+		this.props.getCategories();
+	}
 
 	render() {
+		const sidelist = this.props.category.categories.map((c, index) => {
+			return (
+				<li key={index} className="list-group-item d-flex justify-content-between align-items-center">
+					{c}
+					<span className="badge badge-primary badge-pill">{10}</span>
+				</li>
+			)
+		})
 		return (
 			<div>
 				<h5>Catagories</h5>
 				<ul className="list-group">
-					{this.sidelist}
+					{sidelist}
 				</ul>
 			</div>
 		);
 	}
 }
 
-export default Side;
+const mapStateToProps = (state) => ({
+    category: state.category
+});
+
+export default connect(mapStateToProps, { getCategories })(Side);
