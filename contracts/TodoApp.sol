@@ -4,10 +4,23 @@ pragma solidity ^0.5.0;
 
 contract TodoApp {
 
+    event OnPostAdded(uint todoId);
     event OnTodoAdded(uint todoId);
     event OnTodoDeleted(uint todoId);
     event OnTodoCompleted(uint todoId);
     event OnTodoUndone(uint todoId);
+
+    struct User {
+        string addr;
+        string name;
+    }
+
+    struct Post {
+        string id;
+        string category;
+        string title;
+        string content;
+    }
 
     struct Todo {
         string taskName;
@@ -16,6 +29,10 @@ contract TodoApp {
     }
 
     Todo[] todos;
+    Post[] posts;
+    User[] users;
+    string[] categorys;
+
 
 
     // Modifier
@@ -25,17 +42,39 @@ contract TodoApp {
     }
 
 
+    function addPost(string memory id, string memory category,
+                     string memory title, string memory content) public {
+        Post memory post = Post({
+            id: id, 
+            category: category, 
+            title: title, 
+            content: content});
+            
+        uint postId = posts.push(post) - 1;
+        emit OnPostAdded(postId);
+    }
+
+    function getPostLength() public view returns(uint length){
+        return posts.length;
+    }
+    
+    function getPosts(uint idx) public view 
+    returns(string memory id, string memory category, string memory title, string memory content){
+        Post memory post = posts[idx];
+        return(post.id, post.category, post.title, post.content);
+    } 
     // Public function
+
+    //function getPosts() public view returns(){
+    //    
+    //}
+    
     function isTodoValid(uint _todoId) public view returns(bool isValid) {
         return todos[_todoId].isValid;
     }
 
     function isTodoCompleted(uint _todoId) public view isValidTodo(_todoId) returns(bool isValid) {
         return todos[_todoId].isComplete;
-    }
-
-    function getTodo(uint _todoId) public view isValidTodo(_todoId) returns(string memory, bool) {
-        return (todos[_todoId].taskName, todos[_todoId].isComplete);
     }
 
     function getTodoList() public view returns(uint[] memory, bool[] memory) {

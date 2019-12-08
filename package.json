@@ -22,9 +22,13 @@
   "homepage": "https://github.com/1998Isabel/NMLabFinalProject#readme",
   "dependencies": {
     "concurrently": "^5.0.0",
+    "ethereumjs-tx": "^2.1.1",
     "express": "^4.17.1",
     "react-bootstrap": "^1.0.0-beta.16",
-    "uuid": "^3.3.3"
+    "uuid": "^3.3.3",
+    "web3": "1.2.0",
+    "web3-eth": "^1.2.4",
+    "window": "^4.2.6"
   },
   "devDependencies": {
     "nodemon": "^2.0.1"

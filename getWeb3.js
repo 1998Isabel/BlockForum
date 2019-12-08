@@ -1,5 +1,5 @@
-import Web3 from "web3";
-
+var Web3 = require("web3");
+const window = require('window');
 // Reference: https://github.com/truffle-box/react-box/blob/master/client/src/utils/getWeb3.js
 const getWeb3 = () =>
   new Promise((resolve, reject) => {
@@ -36,4 +36,4 @@ const getWeb3 = () =>
     });
   });
 
-export default getWeb3;
+module.exports = getWeb3;
