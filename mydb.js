@@ -10,7 +10,7 @@ const categories = [
   "International",
   "Sports",
   "Entertainment",
-  "Economics",
+  "Economics"
 ];
 
 const posts = [
@@ -18,19 +18,22 @@ const posts = [
     id: "1",
     category: "Economics",
     title: "Post1",
-    content: "This is the first post!"
+    content: "This is the first post!",
+    date: Date.now()
   },
   {
     id: "2",
     category: "Sports",
     title: "Post2",
-    content: "This is the 2nd post!"
+    content: "This is the 2nd post!",
+    date: Date.now()
   },
   {
     id: "3",
     category: "News",
     title: "Post3",
-    content: "This is the 3rd post!"
+    content: "This is the 3rd post!",
+    date: Date.now()
   }
 ];
 
