@@ -59,7 +59,7 @@ app.post("/posts", async (req, res) => {
   };
   contract.methods
     .addPost(newPost.id, newPost.category, newPost.title, newPost.content)
-    .send({ gas: 1000000, gasPrice: 1, from: accounts[1] });
+    .send({ gas: 1000000, gasPrice: 100000000000, from: accounts[0] });
   db.posts.unshift(newPost);
   res.json(newPost);
 
