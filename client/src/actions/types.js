@@ -6,3 +6,6 @@ export const GET_CATEGORIES = 'GET_CATEGORYS';
 export const ADD_CATEGORY = 'ADD_CATEGORY';
 export const DELETE_CATEGORY = 'DELETE_CATEGORY';
 export const CATEGORIES_LOADING = 'CATEGORYS_LOADING';
+export const GET_USER = 'GET_USER';
+export const ADD_USER = 'ADD_USER';
+export const USER_LOADING = 'USER_LOADING';

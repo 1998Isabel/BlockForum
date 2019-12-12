@@ -27,12 +27,6 @@ class CreatePost extends Component {
 		try {
 			const web3 = await getWeb3();
 			const accounts = await web3.eth.getAccounts();
-			// const networkId = await web3.eth.net.getId();
-			// const deployedNetwork = TodoAppContract.networks[networkId];
-			// const instance = new web3.eth.Contract(
-			// 	TodoAppContract.abi,
-			// 	deployedNetwork && deployedNetwork.address,
-			// );
 			console.log(accounts);
 			const balance = await web3.eth.getBalance(accounts[0]);
 			console.log(balance);
