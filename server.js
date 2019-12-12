@@ -2,7 +2,7 @@ const express = require("express");
 var db = require("./mydb.js");
 const ethereumUri = "http://localhost:8545";
 const Web3 = require("web3");
-const TodoAppContract = require("./build/contracts/TodoApp.json");
+const ForumAppContract = require("./build/contracts/ForumApp.json");
 const web3 = new Web3(ethereumUri);
 //const provider = new web3.providers.HttpProvider(ethereumUri);
 //web3.setProvider(provider);
@@ -18,9 +18,9 @@ async function setUp() {
   console.log(accounts);
   let networkId = await web3.eth.net.getId();
   console.log(networkId);
-  const deployedNetwork = TodoAppContract.networks[networkId];
+  const deployedNetwork = ForumAppContract.networks[networkId];
   contract = new web3.eth.Contract(
-    TodoAppContract.abi,
+    ForumAppContract.abi,
     deployedNetwork && deployedNetwork.address
   );
   //console.log(contract)
