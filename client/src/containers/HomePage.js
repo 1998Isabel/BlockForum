@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getPosts, addPost, deletePost } from '../actions/postActions';
+import { getPosts, addPost } from '../actions/postActions';
 import PostCard from '../components/PostCard';
 
 class HomePage extends Component {
@@ -30,4 +30,4 @@ const mapStateToProps = (state) => ({
 	post: state.post
 });
 
-export default connect(mapStateToProps, { getPosts, addPost, deletePost })(HomePage);
+export default connect(mapStateToProps, { getPosts, addPost })(HomePage);

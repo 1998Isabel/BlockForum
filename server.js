@@ -55,7 +55,9 @@ app.post("/posts", async (req, res) => {
     id: req.body.id,
     category: req.body.category,
     title: req.body.title,
-    content: req.body.content
+    content: req.body.content,
+    date: req.body.date,
+    user: req.body.user
   };
   contract.methods
     .addPost(newPost.id, newPost.category, newPost.title, newPost.content)

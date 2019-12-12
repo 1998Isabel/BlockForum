@@ -1,20 +1,28 @@
 import React, { Component } from "react";
-import "./../css/bootstrap.min.css";
+import { Button } from 'react-bootstrap';
 import moment from "moment";
+import { connect } from 'react-redux';
+import { deletePost } from '../actions/postActions';
 
 class PostCard extends Component {
+  handleDelete = () => {
+    this.props.deletePost(this.props.post.id);
+  }
+
   render() {
     let { post } = this.props;
     let time = moment(post.date).format("MMMM Do YYYY, h:mm:ss a");
-    // console.log(moment().diff(moment(post.date), "seconds"));
+    
     return (
       <div>
         <div className="card mb-3">
           <div className="card-body">
-            <h5 className="card-title">{post.title}</h5>
+            <h5 className="card-title">
+              {post.title}
+              <Button variant="secondary" style={{float: "right"}} onClick={this.handleDelete}>Delete</Button>
+            </h5>
             <h6 className="card-subtitle text-muted">{post.category}</h6>
           </div>
-          {/* <img style={{height: "200px", width: "100%", display: "block"}} src="" alt="Card image" /> */}
           <div className="card-body">
             <p className="card-text">{post.content}</p>
           </div>
@@ -25,4 +33,4 @@ class PostCard extends Component {
   }
 }
 
-export default PostCard;
+export default connect(null, { deletePost })(PostCard);
