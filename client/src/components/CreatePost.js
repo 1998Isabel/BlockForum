@@ -72,6 +72,8 @@ class CreatePost extends Component {
 			category: this.state.category,
 			title: this.state.title,
 			content: this.state.content,
+			date: Date.now(),
+			user: this.state.fromAccount,
 		});
 		this.handleClose()
 	}

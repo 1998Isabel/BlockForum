@@ -9,6 +9,18 @@ class PostCard extends Component {
     this.props.deletePost(this.props.post.id);
   }
 
+  showDelete = () => {
+    const now = moment(Date.now())
+    const duration = moment.duration(now.diff(this.props.post.date)).asSeconds()
+    console.log("DURATION",duration);
+    if (duration < 10)
+      return (
+        <Button variant="secondary" style={{float: "right"}} onClick={this.handleDelete}>Delete</Button>
+      )
+    else
+      return
+  }
+
   render() {
     let { post } = this.props;
     let time = moment(post.date).format("MMMM Do YYYY, h:mm:ss a");
@@ -19,7 +31,7 @@ class PostCard extends Component {
           <div className="card-body">
             <h5 className="card-title">
               {post.title}
-              <Button variant="secondary" style={{float: "right"}} onClick={this.handleDelete}>Delete</Button>
+              {this.showDelete()}
             </h5>
             <h6 className="card-subtitle text-muted">{post.category}</h6>
           </div>
