@@ -91,13 +91,6 @@ app.post("/categories", (req, res) => {
   res.json(newCategory);
 });
 
-app.delete("/categories/:id", (req, res) => {
-  db.categories = db.categories.filter(
-    category => category.id !== req.params.id
-  );
-  res.json(db.categories);
-});
-
 const port = process.env.PORT || 7000;
 
 app.listen(port, async () => {
