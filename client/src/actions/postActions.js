@@ -28,6 +28,7 @@ export const addPost = post => dispatch => {
 };
 
 export const deletePost = id => dispatch => {
+    console.log("ID", id)
     axios.delete(`/posts/${id}`)
         .then(res => 
             dispatch({

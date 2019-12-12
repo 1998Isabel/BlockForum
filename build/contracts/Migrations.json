@@ -721,11 +721,7 @@
     "src": "0:515:1"
   },
   "legacyAST": {
-<<<<<<< HEAD
-    "absolutePath": "/Users/pxpxkao1418/Desktop/網多實驗/Blockchain/NMLabFinalProject/contracts/Migrations.sol",
-=======
     "absolutePath": "/Users/isabel/Desktop/NMLabFinalProject/contracts/Migrations.sol",
->>>>>>> master
     "exportedSymbols": {
       "Migrations": [
         266
@@ -1378,34 +1374,15 @@
     "version": "0.5.8+commit.23d335f2.Emscripten.clang"
   },
   "networks": {
-    "1576129241922": {
+    "1576144578315": {
       "events": {},
       "links": {},
-      "address": "0x08D5cB3048Bbc4173c0B8b8a6fe4A8E7DeaA6F53",
-      "transactionHash": "0x10198ebc254810f0d60db227f9e4527632d6054c54a58e0bcce9548e6899df5b"
-    },
-<<<<<<< HEAD
-    "1576136928906": {
-      "events": {},
-      "links": {},
-      "address": "0xd4862070ab9f9E05dc793277E1B93705c878a501",
-      "transactionHash": "0xfbbd83826d544865cd4e4ced6b542f2b21f2acc46a111f6209889504c00cbbbf"
-    }
-  },
-  "schemaVersion": "3.0.18",
-  "updatedAt": "2019-12-12T07:49:21.289Z",
-  "networkType": "ethereum",
-=======
-    "1576141513617": {
-      "events": {},
-      "links": {},
-      "address": "0xca0B7f08189E3Ce38c951f81D19fb6E080C77594",
-      "transactionHash": "0x8218d638b6f0b36e2fd18598e6fa2ea90187d4eea25a903198b1f37e67eff850"
+      "address": "0x5Edcc58e382CEA585a1E6c70dDb00a4A3eB5FEa1",
+      "transactionHash": "0xbbd3ff9782dae627aef06e82b1f48a03825c9675e3190635cfb56bb3f2ac35a1"
     }
   },
   "schemaVersion": "3.0.16",
-  "updatedAt": "2019-12-12T09:05:46.662Z",
->>>>>>> master
+  "updatedAt": "2019-12-12T09:58:48.009Z",
   "devdoc": {
     "methods": {}
   },

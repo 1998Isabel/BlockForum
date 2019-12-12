@@ -74,7 +74,7 @@ class CreatePost extends Component {
 
 	render() {
 		const { show } = this.state;
-		const categoryOption = this.props.category.categories.map(c => (<option>{c}</option>))
+		const categoryOption = this.props.category.categories.map((c,idx) => (<option key={idx}>{c}</option>))
 
 		return (
 			<div>
@@ -100,11 +100,6 @@ class CreatePost extends Component {
 									<Form.Group controlId="ControlSelect1">
 										<Form.Label>Select category</Form.Label>
 										<Form.Control as="select" onChange={this.changeCategory}>
-											{/* <option>1</option>
-											<option>2</option>
-											<option>3</option>
-											<option>4</option>
-											<option>5</option> */}
 											{categoryOption}
 										</Form.Control>
 									</Form.Group>

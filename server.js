@@ -117,6 +117,7 @@ app.delete("/posts/:id", (req, res) => {
       if (post.id === req.params.id) {
         clearTimeout(post.timer);
       }
+      return post
     })
     .filter(post => post.id !== req.params.id);
   res.json(db.posts);

@@ -2858,11 +2858,7 @@
     "src": "0:2077:0"
   },
   "legacyAST": {
-<<<<<<< HEAD
-    "absolutePath": "/Users/pxpxkao1418/Desktop/網多實驗/Blockchain/NMLabFinalProject/contracts/ForumApp.sol",
-=======
     "absolutePath": "/Users/isabel/Desktop/NMLabFinalProject/contracts/ForumApp.sol",
->>>>>>> master
     "exportedSymbols": {
       "ForumApp": [
         209
@@ -5505,28 +5501,13 @@
     "version": "0.5.8+commit.23d335f2.Emscripten.clang"
   },
   "networks": {
-    "1576129241922": {
+    "1576144578315": {
       "events": {
-        "0x8034f19d2c388a1dfa0030b414c3c6616c42f9e007d2647f077fd12febc77a89": {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": false,
-              "internalType": "uint256",
-              "name": "catId",
-              "type": "uint256"
-            }
-          ],
-          "name": "OnCatAdded",
-          "type": "event",
-          "signature": "0x8034f19d2c388a1dfa0030b414c3c6616c42f9e007d2647f077fd12febc77a89"
-        },
         "0x8293f4e01368efdeac589d77db9b3e46b56be3d118c53292b595171e8cb7bdde": {
           "anonymous": false,
           "inputs": [
             {
               "indexed": false,
-              "internalType": "uint256",
               "name": "postId",
               "type": "uint256"
             }
@@ -5535,12 +5516,24 @@
           "type": "event",
           "signature": "0x8293f4e01368efdeac589d77db9b3e46b56be3d118c53292b595171e8cb7bdde"
         },
+        "0x8034f19d2c388a1dfa0030b414c3c6616c42f9e007d2647f077fd12febc77a89": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "catId",
+              "type": "uint256"
+            }
+          ],
+          "name": "OnCatAdded",
+          "type": "event",
+          "signature": "0x8034f19d2c388a1dfa0030b414c3c6616c42f9e007d2647f077fd12febc77a89"
+        },
         "0x05e92da4243056aec80897f377df446555c2ec369a1c4ad2884166908bdb6c4a": {
           "anonymous": false,
           "inputs": [
             {
               "indexed": false,
-              "internalType": "uint256",
               "name": "userId",
               "type": "uint256"
             }
@@ -5551,102 +5544,12 @@
         }
       },
       "links": {},
-      "address": "0x093ab4e675cFa734Eba5a7bC1324974c36e3ce8D",
-      "transactionHash": "0x59a1e176ff1a9c835c73cd2e13b26b2db4dea0fe785895781fc747a5659d4815"
-    },
-<<<<<<< HEAD
-    "1576136928906": {
-      "events": {
-        "0x8034f19d2c388a1dfa0030b414c3c6616c42f9e007d2647f077fd12febc77a89": {
-=======
-    "1576141513617": {
-      "events": {
-        "0x8293f4e01368efdeac589d77db9b3e46b56be3d118c53292b595171e8cb7bdde": {
->>>>>>> master
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": false,
-<<<<<<< HEAD
-              "internalType": "uint256",
-              "name": "catId",
-              "type": "uint256"
-            }
-          ],
-          "name": "OnCatAdded",
-          "type": "event",
-          "signature": "0x8034f19d2c388a1dfa0030b414c3c6616c42f9e007d2647f077fd12febc77a89"
-        },
-        "0x8293f4e01368efdeac589d77db9b3e46b56be3d118c53292b595171e8cb7bdde": {
-=======
-              "name": "postId",
-              "type": "uint256"
-            }
-          ],
-          "name": "OnPostAdded",
-          "type": "event",
-          "signature": "0x8293f4e01368efdeac589d77db9b3e46b56be3d118c53292b595171e8cb7bdde"
-        },
-        "0x8034f19d2c388a1dfa0030b414c3c6616c42f9e007d2647f077fd12febc77a89": {
->>>>>>> master
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": false,
-<<<<<<< HEAD
-              "internalType": "uint256",
-              "name": "postId",
-              "type": "uint256"
-            }
-          ],
-          "name": "OnPostAdded",
-          "type": "event",
-          "signature": "0x8293f4e01368efdeac589d77db9b3e46b56be3d118c53292b595171e8cb7bdde"
-=======
-              "name": "catId",
-              "type": "uint256"
-            }
-          ],
-          "name": "OnCatAdded",
-          "type": "event",
-          "signature": "0x8034f19d2c388a1dfa0030b414c3c6616c42f9e007d2647f077fd12febc77a89"
->>>>>>> master
-        },
-        "0x05e92da4243056aec80897f377df446555c2ec369a1c4ad2884166908bdb6c4a": {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": false,
-<<<<<<< HEAD
-              "internalType": "uint256",
-=======
->>>>>>> master
-              "name": "userId",
-              "type": "uint256"
-            }
-          ],
-          "name": "OnUserAdded",
-          "type": "event",
-          "signature": "0x05e92da4243056aec80897f377df446555c2ec369a1c4ad2884166908bdb6c4a"
-        }
-      },
-      "links": {},
-<<<<<<< HEAD
-      "address": "0x982Adf986d0C6479C7f631Ba9CD1D0cA5f16d977",
-      "transactionHash": "0x79496cdf75179376f2fd6c00bda9a4362d038708bac195d3ced8c8fb1c0d7906"
-    }
-  },
-  "schemaVersion": "3.0.18",
-  "updatedAt": "2019-12-12T07:49:21.280Z",
-  "networkType": "ethereum",
-=======
-      "address": "0xB842A31Ba67AE6c06c0D54605F13808cb18BD18D",
-      "transactionHash": "0x5a7a3997aaa91ef4275631a5e8031927689305217189be92cb97575f5d317350"
+      "address": "0xc6202dF44918Aeb591C79C7a90CEeE0D4589B87C",
+      "transactionHash": "0xbd1c06f39d8496afcdd3ab95f37e98ce4e92dd93cedcceea614e99ba85f66fa2"
     }
   },
   "schemaVersion": "3.0.16",
-  "updatedAt": "2019-12-12T09:05:46.660Z",
->>>>>>> master
+  "updatedAt": "2019-12-12T09:58:48.007Z",
   "devdoc": {
     "methods": {}
   },

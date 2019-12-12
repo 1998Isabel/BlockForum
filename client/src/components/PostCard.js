@@ -6,6 +6,7 @@ import { deletePost } from '../actions/postActions';
 
 class PostCard extends Component {
   handleDelete = () => {
+    console.log("D", this.props.post.id)
     this.props.deletePost(this.props.post.id);
   }
 
