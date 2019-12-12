@@ -1,5 +1,11 @@
 const express = require("express");
-var db = require("./mydb.js");
+// var db = require("./mydb.js");
+var db = {
+  posts: [],
+  user: [],
+  categories: ["News", "International", "Sports", "Entertainment", "Economics"]
+};
+const moment = require("moment");
 const ethereumUri = "http://localhost:8545";
 const Web3 = require("web3");
 const ForumAppContract = require("./build/contracts/ForumApp.json");
@@ -24,6 +30,19 @@ async function setUp() {
     deployedNetwork && deployedNetwork.address
   );
   //console.log(contract)
+  let id = await contract.methods.getPostLength().call();
+  console.log(id);
+  var i;
+  for (i = 0; i < id; i++) {
+    var post = await contract.methods.getPosts(i).call();
+    db.posts.unshift({
+      id: post.id,
+      category: post.category,
+      title: post.title,
+      content: post.content
+    });
+  }
+  console.log(db);
 }
 setUp();
 
@@ -35,7 +54,6 @@ app.get("/address", (req, res) => {
 });
 
 // Users METHODS
-
 app.get("/user/:addr", (req, res) => {
   const user = db.users.filter(user => user.addr === req.params.addr);
   // user = contract ....
@@ -57,10 +75,19 @@ app.post("/posts", async (req, res) => {
     title: req.body.title,
     content: req.body.content
   };
-  contract.methods
-    .addPost(newPost.id, newPost.category, newPost.title, newPost.content)
-    .send({ gas: 1000000, gasPrice: 100000000000, from: accounts[0] });
-  db.posts.unshift(newPost);
+
+  //
+  console.log(moment().format("MMMM Do YYYY, h:mm:ss a"));
+  var setID = setTimeout(() => {
+    contract.methods
+      .addPost(newPost.id, newPost.category, newPost.title, newPost.content)
+      .send({ gas: 1000000, gasPrice: 100000000000, from: accounts[0] });
+    console.log(moment().format("MMMM Do YYYY, h:mm:ss a"));
+  }, 10000);
+  console.log(setID);
+
+  // Push to db
+  db.posts.unshift({ ...newPost, timer: setID });
   res.json(newPost);
 
   //////////////////// Testing part
@@ -72,7 +99,13 @@ app.post("/posts", async (req, res) => {
 
 // Delete
 app.delete("/posts/:id", (req, res) => {
-  db.posts = db.posts.filter(post => post.id !== req.params.id);
+  db.posts = db.posts
+    .map(post => {
+      if (post.id === req.params.id) {
+        clearTimeout(post.timer);
+      }
+    })
+    .filter(post => post.id !== req.params.id);
   res.json(db.posts);
 });
 
