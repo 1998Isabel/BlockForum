@@ -54,11 +54,22 @@ app.get("/address", (req, res) => {
 });
 
 // Users METHODS
+//Get
 app.get("/user/:addr", (req, res) => {
   const user = db.users.filter(user => user.addr === req.params.addr);
   // user = contract ....
   res.json(user); // return
 });
+
+//Add
+app.post("/users", (req, res) => {
+  const newUser = {
+    addr: req.body.addr,
+    name: req.body.name,
+  }
+  db.users.unshift(newUser);
+  res.json(newUser);
+})
 
 // Posts METHODS
 // Get
@@ -73,7 +84,9 @@ app.post("/posts", async (req, res) => {
     id: req.body.id,
     category: req.body.category,
     title: req.body.title,
-    content: req.body.content
+    content: req.body.content,
+    date: req.body.date,
+    user: req.body.user
   };
 
   //
