@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './../css/bootstrap.min.css';
 import uuid from "uuid";
 import getWeb3 from "./../utils/getWeb3";
+import axios from 'axios';
 import { connect } from 'react-redux';
 import { addPost } from '../actions/postActions';
 import { getCategories } from '../actions/categoryActions';
@@ -35,8 +36,9 @@ class CreatePost extends Component {
 			console.log(accounts);
 			const balance = await web3.eth.getBalance(accounts[0]);
 			console.log(balance);
-			this.setState({ web3, fromAccount: accounts[0], toAccount: "0x1ce421937a6F59bF58FaafE316D23AaED690DA18" });
-
+			const toAccount = (await axios.get('/address')).data;
+			console.log(toAccount);
+			this.setState({ web3, fromAccount: accounts[0], toAccount: toAccount });
 		} catch (error) {
 			alert(
 				`Failed to load web3, accounts. Check console for details.`,
@@ -54,11 +56,11 @@ class CreatePost extends Component {
 		var txnObject = {
 			"from": this.state.fromAccount,
 			"to": this.state.toAccount,
-			"value": 100,
-			// "gas": 21000,          // (optional)
-			// "gasPrice": 4500000,   // (optional)
+			"value": 1000000000000000000,
+			"gas": 21000,          // (optional)
+			"gasPrice": 4500000,   // (optional)
 			// "data": 'For testing', // (optional)
-			// "nonce": 10            // (optional) 
+			"nonce": 10            // (optional) 
 		};
 		await this.state.web3.eth.sendTransaction(txnObject);
 		const balance1 = await this.state.web3.eth.getBalance(this.state.fromAccount);
