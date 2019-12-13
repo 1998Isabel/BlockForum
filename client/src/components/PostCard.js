@@ -14,7 +14,7 @@ class PostCard extends Component {
     const now = moment(Date.now())
     const duration = moment.duration(now.diff(this.props.post.date)).asSeconds()
     console.log("DURATION",duration);
-    if (duration < 10)
+    if (duration < 60 && this.props.user.myAccount === this.props.post.user)
       return (
         <Button variant="secondary" style={{float: "right"}} onClick={this.handleDelete}>Delete</Button>
       )
@@ -46,4 +46,8 @@ class PostCard extends Component {
   }
 }
 
-export default connect(null, { deletePost })(PostCard);
+const mapStateToProps = (state) => ({
+	user: state.user,
+});
+
+export default connect(mapStateToProps, { deletePost })(PostCard);

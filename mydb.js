@@ -1,6 +1,6 @@
 const users = [
   {
-    addr: "xxxx",
+    addr: "0x4FfB7F2188D6F4482293EFEd25FE869af85CCbb8",
     name: "test"
   }
 ];
@@ -20,7 +20,7 @@ const posts = [
     title: "Post1",
     content: "This is the first post!",
     date: Date.now(),
-    user: "0xE195c59BCF26fD36c82d1C720860127A5c1c4040",
+    user: "xxx",
   },
   // {
   //   id: "2",
