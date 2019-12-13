@@ -7,7 +7,7 @@ var db = {
 };
 const moment = require("moment");
 const fs = require("fs");
-const hash = require("object-hash");
+// const hash = require("object-hash");
 const ethereumUri = "http://localhost:8545";
 const Web3 = require("web3");
 const ForumAppContract = require("./build/contracts/ForumApp.json");
@@ -34,12 +34,23 @@ async function setUp() {
   //console.log(contract)
 
   // Get db from Chain
+  var chain_db = {
+    posts: [],
+    users: [],
+    categories: [
+      "News",
+      "International",
+      "Sports",
+      "Entertainment",
+      "Economics"
+    ]
+  };
   let id = await contract.methods.getPostLength().call();
   console.log(id);
   var i;
   for (i = 0; i < id; i++) {
     var post = await contract.methods.getPosts(i).call();
-    db.posts.unshift({
+    chain_db.posts.unshift({
       id: post.id,
       category: post.category,
       title: post.title,
@@ -47,7 +58,7 @@ async function setUp() {
       date: 1576246664165
     });
   }
-  console.log("DB from BlockChain", db);
+  // console.log("DB from BlockChain", db);
   // 每次交易都會在重整一次 會吃到BlockChain的db
   // Get db from jsonFile
   var json_db = {
@@ -68,14 +79,17 @@ async function setUp() {
         if (err) {
           console.log(err);
         } else {
-          json_db = JSON.parse(data); //now it an object
-          console.log("DB from mydb.json", json_db);
-
+          db = JSON.parse(data); //now it an object
+          // console.log("db", db);
+          json_db = JSON.parse(data);
           // Compare db from JSON with db from BlockChain
-          json_db.posts = json_db.posts.filter(p => {
-            return moment(p.date).diff(moment(), "seconds") > 60;
+          json_db.posts = db.posts.filter(p => {
+            // console.log(moment().diff(moment(p.date), "seconds"));
+            return moment().diff(moment(p.date), "seconds") > 60;
           });
-          console.log(JSON.stringify(db) === JSON.stringify(json_db));
+          // console.log("From BlockChain", chain_db);
+          // console.log("From mydb.json", json_db);
+          console.log(JSON.stringify(chain_db) === JSON.stringify(json_db));
         }
       });
     }
@@ -125,7 +139,7 @@ setInterval(() => {
   var newPosts = db.posts.filter(p => {
     var sub = checkTime.diff(moment(p.date), "seconds");
     if (sub < 60) console.log(sub);
-    return sub >= 60 && sub <= 65;
+    return sub >= 60 && sub < 65;
   });
   if (newPosts.length > 0) console.log("NEWPOST", newPosts);
   newPosts.forEach(newPost => {
