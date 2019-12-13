@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import './../css/bootstrap.min.css';
 import uuid from "uuid";
-import getWeb3 from "./../utils/getWeb3";
-import axios from 'axios';
 import { connect } from 'react-redux';
 import { addPost } from '../actions/postActions';
 import { getCategories } from '../actions/categoryActions';
@@ -24,21 +22,6 @@ class CreatePost extends Component {
 
 	componentDidMount = async () => {
 		this.props.getCategories();
-		try {
-			const web3 = await getWeb3();
-			const accounts = await web3.eth.getAccounts();
-			console.log(accounts);
-			const balance = await web3.eth.getBalance(accounts[0]);
-			console.log(balance);
-			const toAccount = (await axios.get('/address')).data;
-			console.log(toAccount);
-			this.setState({ web3, fromAccount: accounts[0], toAccount: toAccount });
-		} catch (error) {
-			alert(
-				`Failed to load web3, accounts. Check console for details.`,
-			);
-			console.error(error);
-		}
 	}
 
 	handleShow = () => this.setState({ show: true });
@@ -47,19 +30,20 @@ class CreatePost extends Component {
 	changeContent = (event) => this.setState({ content: event.target.value });
 	changeCategory = (event) => this.setState({ category: event.target.value });
 	handleSubmit = async () => {
+		const { web3, myAccount, serverAccount } = this.props.user;
 		var txnObject = {
-			"from": this.state.fromAccount,
-			"to": this.state.toAccount,
+			"from": myAccount,
+			"to": serverAccount,
 			"value": 1000000000000000000,
 			"gas": 21000,          // (optional)
 			"gasPrice": 4500000,   // (optional)
 			// "data": 'For testing', // (optional)
 			"nonce": 10            // (optional) 
 		};
-		await this.state.web3.eth.sendTransaction(txnObject);
-		const balance1 = await this.state.web3.eth.getBalance(this.state.fromAccount);
+		await web3.eth.sendTransaction(txnObject);
+		const balance1 = await web3.eth.getBalance(serverAccount);
 		console.log(balance1);
-		const balance2 = await this.state.web3.eth.getBalance(this.state.toAccount);
+		const balance2 = await web3.eth.getBalance(serverAccount);
 		console.log(balance2);
 		this.props.addPost({
 			id: uuid.v1(),
@@ -67,14 +51,14 @@ class CreatePost extends Component {
 			title: this.state.title,
 			content: this.state.content,
 			date: Date.now(),
-			user: this.state.fromAccount,
+			user: myAccount,
 		});
 		this.handleClose()
 	}
 
 	render() {
 		const { show } = this.state;
-		const categoryOption = this.props.category.categories.map(c => (<option>{c}</option>))
+		const categoryOption = this.props.category.categories.map((c, idx) => (<option key={idx}>{c}</option>))
 
 		return (
 			<div>
@@ -100,11 +84,6 @@ class CreatePost extends Component {
 									<Form.Group controlId="ControlSelect1">
 										<Form.Label>Select category</Form.Label>
 										<Form.Control as="select" onChange={this.changeCategory}>
-											{/* <option>1</option>
-											<option>2</option>
-											<option>3</option>
-											<option>4</option>
-											<option>5</option> */}
 											{categoryOption}
 										</Form.Control>
 									</Form.Group>
@@ -131,7 +110,8 @@ class CreatePost extends Component {
 }
 
 const mapStateToProps = (state) => ({
-	category: state.category
+	category: state.category,
+	user: state.user,
 });
 
 export default connect(mapStateToProps, { addPost, getCategories })(CreatePost);

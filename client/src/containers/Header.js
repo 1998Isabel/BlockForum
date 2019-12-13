@@ -21,7 +21,7 @@ class Header extends Component {
 					</Nav>
 					<Form inline>
 						<FormControl type="text" placeholder="Search" className="mr-sm-2" />
-						<Button variant="outline-primary">Account</Button>
+						<Button variant="outline-primary" onClick={this.props.showAccount}>Account</Button>
 					</Form>
 				</Navbar.Collapse>
 			</Navbar>

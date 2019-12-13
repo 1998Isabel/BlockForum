@@ -37,9 +37,12 @@ app.get("/address", (req, res) => {
 // Users METHODS
 //Get
 app.get("/user/:addr", (req, res) => {
-  const user = db.users.filter(user => user.addr === req.params.addr);
+  const user = db.users.filter(user => user.addr == req.params.addr);
   // user = contract ....
-  res.json(user); // return
+  var name = null;
+  if(user.length)
+    name = user[0].name
+  res.json(name); // return
 });
 
 //Add
@@ -49,7 +52,7 @@ app.post("/users", (req, res) => {
     name: req.body.name,
   }
   db.users.unshift(newUser);
-  res.json(newUser);
+  res.json(newUser.name);
 })
 
 // Posts METHODS

@@ -9,3 +9,4 @@ export const CATEGORIES_LOADING = 'CATEGORYS_LOADING';
 export const GET_USER = 'GET_USER';
 export const ADD_USER = 'ADD_USER';
 export const USER_LOADING = 'USER_LOADING';
+export const LOAD_WEB3 = 'LOAD_WEB3';

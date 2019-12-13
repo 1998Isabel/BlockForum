@@ -1,8 +1,35 @@
 import axios from 'axios';
-import { 
+import {
+    LOAD_WEB3,
     GET_USER, 
     ADD_USER, 
     USER_LOADING } from './types';
+import getWeb3 from "./../utils/getWeb3";
+
+export const loadWeb3 = () => async dispatch => {
+    dispatch(setUserLoading());
+    try {
+        const web3 = await getWeb3();
+        const accounts = await web3.eth.getAccounts();
+        const serverAccount = (await axios.get('/address')).data;
+        const username = (await axios.get(`/user/${accounts[0]}`)).data;
+        console.log(username)
+        dispatch({
+            type: LOAD_WEB3,
+            payload: {
+                web3: web3,
+                username: username,
+                myAccount: accounts[0],
+                serverAccount: serverAccount,
+            }
+        })
+    } catch (error) {
+        alert(
+            `Failed to load web3, accounts. Check console for details.`,
+        );
+        console.error(error);
+    }
+}
 
 export const getUser = (addr) => dispatch => {
     dispatch(setUserLoading());
@@ -16,6 +43,7 @@ export const getUser = (addr) => dispatch => {
 };
 
 export const addUser = user => dispatch => {
+    console.log("USER", user)
     axios
         .post('/users', user)
         .then(res => 
