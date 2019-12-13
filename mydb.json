@@ -1,0 +1,34 @@
+{
+    "posts": [
+        {
+            "id": "a05c5340-1db6-11ea-ab5f-336504319feb",
+            "category": "News",
+            "title": "789",
+            "content": "789",
+            "date": 1576248079988
+        },
+        {
+            "id": "cd12e320-1db3-11ea-8b18-2f61d53488a3",
+            "category": "News",
+            "title": "456",
+            "content": "456",
+            "date": 1576246664165
+        },
+        {
+            "id": "5476e150-1db3-11ea-8b18-2f61d53488a3",
+            "category": "News",
+            "title": "123",
+            "content": "123",
+            "date": 1576246664165
+        }
+    ],
+    "users": [
+    ],
+    "categories": [
+        "News",
+        "International",
+        "Sports",
+        "Entertainment",
+        "Economics"
+    ]
+}

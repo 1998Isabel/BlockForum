@@ -1,11 +1,13 @@
 const express = require("express");
-// var db = require("./mydb.js");
+// var db = require("./mydb.json");
 var db = {
   posts: [],
-  user: [],
+  users: [],
   categories: ["News", "International", "Sports", "Entertainment", "Economics"]
 };
 const moment = require("moment");
+const fs = require("fs");
+const hash = require("object-hash");
 const ethereumUri = "http://localhost:8545";
 const Web3 = require("web3");
 const ForumAppContract = require("./build/contracts/ForumApp.json");
@@ -30,6 +32,8 @@ async function setUp() {
     deployedNetwork && deployedNetwork.address
   );
   //console.log(contract)
+
+  // Get db from Chain
   let id = await contract.methods.getPostLength().call();
   console.log(id);
   var i;
@@ -39,10 +43,45 @@ async function setUp() {
       id: post.id,
       category: post.category,
       title: post.title,
-      content: post.content
+      content: post.content,
+      date: 1576246664165
     });
   }
-  console.log(db);
+  console.log("DB from BlockChain", db);
+  // 每次交易都會在重整一次 會吃到BlockChain的db
+  // Get db from jsonFile
+  var json_db = {
+    posts: [],
+    users: [],
+    categories: [
+      "News",
+      "International",
+      "Sports",
+      "Entertainment",
+      "Economics"
+    ]
+  };
+  try {
+    if (fs.existsSync("mydb.json")) {
+      //file exists
+      fs.readFile("mydb.json", "utf8", function readFileCallback(err, data) {
+        if (err) {
+          console.log(err);
+        } else {
+          json_db = JSON.parse(data); //now it an object
+          console.log("DB from mydb.json", json_db);
+
+          // Compare db from JSON with db from BlockChain
+          json_db.posts = json_db.posts.filter(p => {
+            return moment(p.date).diff(moment(), "seconds") > 60;
+          });
+          console.log(JSON.stringify(db) === JSON.stringify(json_db));
+        }
+      });
+    }
+  } catch (err) {
+    console.error(err);
+  }
 }
 setUp();
 
@@ -56,11 +95,10 @@ app.get("/address", (req, res) => {
 // Users METHODS
 //Get
 app.get("/user/:addr", (req, res) => {
-  const user = db.users.filter(user => user.addr == req.params.addr);
+  const user = db.users.filter(user => user.addr === req.params.addr);
   // user = contract ....
   var name = null;
-  if(user.length)
-    name = user[0].name
+  if (user.length) name = user[0].name;
   res.json(name); // return
 });
 
@@ -68,11 +106,11 @@ app.get("/user/:addr", (req, res) => {
 app.post("/users", (req, res) => {
   const newUser = {
     addr: req.body.addr,
-    name: req.body.name,
-  }
+    name: req.body.name
+  };
   db.users.unshift(newUser);
   res.json(newUser.name);
-})
+});
 
 // Posts METHODS
 // Get
@@ -80,6 +118,22 @@ app.get("/posts", (req, res) => {
   // post = contract ....
   res.json(db.posts);
 });
+
+// Post newPosts to Contract
+setInterval(() => {
+  var checkTime = moment();
+  var newPosts = db.posts.filter(p => {
+    var sub = checkTime.diff(moment(p.date), "seconds");
+    if (sub < 60) console.log(sub);
+    return sub >= 60 && sub <= 65;
+  });
+  if (newPosts.length > 0) console.log("NEWPOST", newPosts);
+  newPosts.forEach(newPost => {
+    contract.methods
+      .addPost(newPost.id, newPost.category, newPost.title, newPost.content)
+      .send({ gas: 1000000, gasPrice: 100000000000, from: accounts[0] });
+  });
+}, 5000);
 
 // Add
 app.post("/posts", async (req, res) => {
@@ -92,18 +146,14 @@ app.post("/posts", async (req, res) => {
     user: req.body.user
   };
 
-  //
-  console.log(moment().format("MMMM Do YYYY, h:mm:ss a"));
-  var setID = setTimeout(() => {
-    contract.methods
-      .addPost(newPost.id, newPost.category, newPost.title, newPost.content)
-      .send({ gas: 1000000, gasPrice: 100000000000, from: accounts[0] });
-    console.log(moment().format("MMMM Do YYYY, h:mm:ss a"));
-  }, 10000);
-  console.log(setID);
-
   // Push to db
-  db.posts.unshift({ ...newPost, timer: setID });
+  db.posts.unshift(newPost);
+
+  fs.writeFile("mydb.json", JSON.stringify(db, null, 4), "utf8", function(err) {
+    if (err) throw err;
+    console.log("complete");
+  });
+
   res.json(newPost);
 
   //////////////////// Testing part
@@ -115,14 +165,15 @@ app.post("/posts", async (req, res) => {
 
 // Delete
 app.delete("/posts/:id", (req, res) => {
-  db.posts = db.posts
-    .map(post => {
-      if (post.id === req.params.id) {
-        clearTimeout(post.timer);
-      }
-      return post
-    })
-    .filter(post => post.id !== req.params.id);
+  db.posts.filter(post => post.id !== req.params.id);
+  // db.posts = db.posts
+  //   .map(post => {
+  //     if (post.id === req.params.id) {
+  //       clearTimeout(post.timer);
+  //     }
+  //     return post;
+  //   })
+  //   .filter(post => post.id !== req.params.id);
   res.json(db.posts);
 });
 
