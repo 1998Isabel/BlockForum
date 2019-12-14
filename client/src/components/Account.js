@@ -42,9 +42,24 @@ class Account extends Component {
 		}
 	}
 
-	saveUsername = () => {
+	saveUsername = async () => {
+		const { web3, myAccount, serverAccount } = this.props.user;
+		var txnObject = {
+			"from": myAccount,
+			"to": serverAccount,
+			"value": 1000000000000000000,
+			"gas": 21000,          // (optional)
+			"gasPrice": 4500000,   // (optional)
+			// "data": 'For testing', // (optional)
+			"nonce": 10            // (optional) 
+		};
+		await web3.eth.sendTransaction(txnObject);
+		const balance1 = await web3.eth.getBalance(serverAccount);
+		console.log(balance1);
+		const balance2 = await web3.eth.getBalance(serverAccount);
+		console.log(balance2);
 		this.props.addUser({
-			addr: this.props.user.myAccount,
+			addr: myAccount,
 			name: this.state.username,
 		})
 	}

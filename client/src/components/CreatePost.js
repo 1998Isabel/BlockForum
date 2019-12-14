@@ -6,24 +6,29 @@ import { addPost } from '../actions/postActions';
 import { getCategories } from '../actions/categoryActions';
 import { Button, Modal, Form } from 'react-bootstrap';
 
+const defaultState = {
+	show: false,
+	title: "",
+	content: "",
+	category: "News",
+	file: null,
+	imgUrl: null,
+};
+
 class CreatePost extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			show: false,
-			title: "",
-			content: "",
-			category: "News",
-			file: null,
-			imgUrl: null,
-		};
+			...defaultState,
+			category: this.props.category.categories[0]
+		}
 	}
 
 	componentDidMount = async () => {
 		this.props.getCategories();
 	}
 
-	handleShow = () => this.setState({ show: true });
+	handleShow = () => this.setState({ ...defaultState, show: true });
 	handleClose = () => this.setState({ show: false });
 	changeTitle = (event) => this.setState({ title: event.target.value });
 	changeContent = (event) => this.setState({ content: event.target.value });
@@ -32,15 +37,12 @@ class CreatePost extends Component {
 		this.setState({
       file: event.target.files[0]
     })
- 
     let reader = new FileReader();
-     
     reader.onloadend = () => {
       this.setState({
         imgUrl: reader.result
       });
     }
- 
     reader.readAsDataURL(event.target.files[0])
 	}
 	handleSubmit = async () => {

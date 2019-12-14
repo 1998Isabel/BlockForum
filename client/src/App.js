@@ -21,7 +21,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.props.loadWeb3()
+    this.props.loadWeb3();
   }
 
   handleShowAccount = (show) => {

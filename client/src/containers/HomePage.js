@@ -6,6 +6,7 @@ import PostCard from '../components/PostCard';
 class HomePage extends Component {
 	componentDidMount() {
 		this.props.getPosts();
+		setInterval(this.props.getPosts, 5000);
 	}
 
 	render() {
