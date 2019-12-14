@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button } from 'react-bootstrap';
 import moment from "moment";
 import { connect } from 'react-redux';
-import { deletePost } from '../actions/postActions';
+import { deletePost, likePost } from '../actions/postActions';
 
 class PostCard extends Component {
   handleDelete = () => {
@@ -22,6 +22,11 @@ class PostCard extends Component {
       return
   }
 
+  likePost = () => {
+    console.log("LIKE")
+    this.props.likePost(this.props.post.id)
+  }
+
   render() {
     let { post } = this.props;
     let time = moment(post.date).format("MMMM Do YYYY, h:mm:ss a");
@@ -39,7 +44,13 @@ class PostCard extends Component {
           <div className="card-body">
             <p className="card-text">{post.content}</p>
           </div>
-          <div className="card-footer text-muted">{time}</div>
+          <div className="card-footer text-muted">
+            {time}
+            <p className="text-primary" style={{float: "right"}}>
+              <span onClick={this.likePost} style={{cursor: "pointer"}}>Like</span>
+              <span className="badge badge-pill badge-primary" style={{marginLeft: "10px"}}>{post.likes}</span>
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -50,4 +61,4 @@ const mapStateToProps = (state) => ({
 	user: state.user,
 });
 
-export default connect(mapStateToProps, { deletePost })(PostCard);
+export default connect(mapStateToProps, { deletePost, likePost })(PostCard);

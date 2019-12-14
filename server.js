@@ -68,7 +68,7 @@ async function setUp() {
       name: user.name
     });
   }
-  // console.log("DB from BlockChain", db);
+  console.log("DB from BlockChain", db);
 
   // Get db from jsonFile
   // var json_db = {
@@ -193,7 +193,7 @@ app.post("/posts", async (req, res) => {
     content: req.body.content,
     date: req.body.date,
     user: req.body.user,
-    likes: req.body.likes
+    likes: 0
   };
 
   // Push to db
@@ -216,11 +216,14 @@ app.post("/posts", async (req, res) => {
 // Update Post's Likes
 app.put("/posts/:id", (req, res) => {
   var updatePost;
-  db.posts.forEach((p, idx) => {
+  db.posts.some((p, idx) => {
     if (p.id === req.params.id) {
       db.posts[idx].likes += 1;
       updatePost = db.posts[idx];
-      break;
+      return true;
+    }
+    else {
+      return false
     }
   });
 
