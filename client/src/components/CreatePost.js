@@ -14,9 +14,8 @@ class CreatePost extends Component {
 			title: "",
 			content: "",
 			category: "News",
-			web3: null,
-			fromAccount: null,
-			toAccount: null,
+			file: null,
+			imgUrl: null,
 		};
 	}
 
@@ -29,6 +28,21 @@ class CreatePost extends Component {
 	changeTitle = (event) => this.setState({ title: event.target.value });
 	changeContent = (event) => this.setState({ content: event.target.value });
 	changeCategory = (event) => this.setState({ category: event.target.value });
+	changeFile = (event) => {
+		this.setState({
+      file: event.target.files[0]
+    })
+ 
+    let reader = new FileReader();
+     
+    reader.onloadend = () => {
+      this.setState({
+        imgUrl: reader.result
+      });
+    }
+ 
+    reader.readAsDataURL(event.target.files[0])
+	}
 	handleSubmit = async () => {
 		const { web3, myAccount, serverAccount } = this.props.user;
 		var txnObject = {
@@ -52,6 +66,7 @@ class CreatePost extends Component {
 			content: this.state.content,
 			date: Date.now(),
 			user: myAccount,
+			img: this.state.file,
 		});
 		this.handleClose()
 	}
@@ -91,15 +106,20 @@ class CreatePost extends Component {
 										<Form.Label>Content</Form.Label>
 										<Form.Control as="textarea" rows="3" onChange={this.changeContent} />
 									</Form.Group>
+									<Form.Group controlId="ControlInput2">
+										<Form.Label>Image</Form.Label>
+										<Form.Control type="file" accept="image/*" onChange={this.changeFile} />
+										<img src={this.state.imgUrl} alt="file" style={{marginTop: "10px",width: "100%", textAlign:"center"}}></img>
+									</Form.Group>
 								</Form>
 							</Modal.Body>
 							<Modal.Footer>
 								<Button variant="secondary" onClick={this.handleClose}>
 									Cancel
-          						</Button>
+          			</Button>
 								<Button variant="primary" onClick={this.handleSubmit}>
 									Submit
-          						</Button>
+          			</Button>
 							</Modal.Footer>
 						</Modal>
 					</div>
