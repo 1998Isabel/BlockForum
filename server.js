@@ -56,7 +56,8 @@ async function setUp() {
       title: post.title,
       content: post.content,
       date: parseInt(post.date),
-      user: post.user
+      user: post.user,
+      likes: 0
     });
   }
   id = await contract.methods.getUserLength().call();
@@ -68,7 +69,7 @@ async function setUp() {
     });
   }
   // console.log("DB from BlockChain", db);
-  // 每次交易都會在重整一次 會吃到BlockChain的db
+
   // Get db from jsonFile
   var json_db = {
     posts: [],
@@ -191,7 +192,8 @@ app.post("/posts", async (req, res) => {
     title: req.body.title,
     content: req.body.content,
     date: req.body.date,
-    user: req.body.user
+    user: req.body.user,
+    likes: req.body.likes
   };
 
   // Push to db
@@ -211,6 +213,19 @@ app.post("/posts", async (req, res) => {
   //////////////////// Testing part
 });
 
+// Update Post's Like
+app.put("/posts/:id", (req, res) => {
+  var updatePost;
+  db.posts.forEach((p, idx) => {
+    if (p.id === req.params.id) {
+      db.posts[idx].likes += 1;
+      updatePost = db.posts[idx];
+      break;
+    }
+  });
+  res.json(updatePost);
+});
+
 // Delete
 app.delete("/posts/:id", (req, res) => {
   db.posts = db.posts.filter(post => post.id !== req.params.id);
@@ -226,16 +241,6 @@ app.delete("/posts/:id", (req, res) => {
 // Categories METHODS
 app.get("/categories", (req, res) => {
   res.json(db.categories);
-});
-
-app.post("/categories", (req, res) => {
-  const newCategory = {
-    id: req.body.id,
-    name: req.body.name
-  };
-
-  db.categories.push(newCategory);
-  res.json(newCategory);
 });
 
 const port = process.env.PORT || 7000;
