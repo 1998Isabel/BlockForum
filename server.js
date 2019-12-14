@@ -34,23 +34,23 @@ async function setUp() {
   //console.log(contract)
 
   // Get db from Chain
-  var chain_db = {
-    posts: [],
-    users: [],
-    categories: [
-      "News",
-      "International",
-      "Sports",
-      "Entertainment",
-      "Economics"
-    ]
-  };
+  // var chain_db = {
+  //   posts: [],
+  //   users: [],
+  //   categories: [
+  //     "News",
+  //     "International",
+  //     "Sports",
+  //     "Entertainment",
+  //     "Economics"
+  //   ]
+  // };
   let id = await contract.methods.getPostLength().call();
   console.log(id);
   var i;
   for (i = 0; i < id; i++) {
     var post = await contract.methods.getPosts(i).call();
-    chain_db.posts.unshift({
+    db.posts.unshift({
       id: post.id,
       category: post.category,
       title: post.title,
@@ -63,7 +63,7 @@ async function setUp() {
   id = await contract.methods.getUserLength().call();
   for (i = 0; i < id; i++) {
     var user = await contract.methods.getUsers(i).call();
-    chain_db.users.push({
+    db.users.push({
       addr: user.addr,
       name: user.name
     });
@@ -71,41 +71,41 @@ async function setUp() {
   // console.log("DB from BlockChain", db);
 
   // Get db from jsonFile
-  var json_db = {
-    posts: [],
-    users: [],
-    categories: [
-      "News",
-      "International",
-      "Sports",
-      "Entertainment",
-      "Economics"
-    ]
-  };
-  try {
-    if (fs.existsSync("mydb.json")) {
-      //file exists
-      fs.readFile("mydb.json", "utf8", function readFileCallback(err, data) {
-        if (err) {
-          console.log(err);
-        } else {
-          db = JSON.parse(data); //now it an object
-          // console.log("db", db);
-          json_db = JSON.parse(data);
-          // Compare db from JSON with db from BlockChain
-          json_db.posts = db.posts.filter(p => {
-            // console.log(moment().diff(moment(p.date), "seconds"));
-            return moment().diff(moment(p.date), "seconds") > 60;
-          });
-          console.log("From BlockChain", chain_db);
-          console.log("From mydb.json", json_db);
-          console.log(JSON.stringify(chain_db) === JSON.stringify(json_db));
-        }
-      });
-    }
-  } catch (err) {
-    console.error(err);
-  }
+  // var json_db = {
+  //   posts: [],
+  //   users: [],
+  //   categories: [
+  //     "News",
+  //     "International",
+  //     "Sports",
+  //     "Entertainment",
+  //     "Economics"
+  //   ]
+  // };
+  // try {
+  //   if (fs.existsSync("mydb.json")) {
+  //     //file exists
+  //     fs.readFile("mydb.json", "utf8", function readFileCallback(err, data) {
+  //       if (err) {
+  //         console.log(err);
+  //       } else {
+  //         db = JSON.parse(data); //now it an object
+  //         // console.log("db", db);
+  //         json_db = JSON.parse(data);
+  //         // Compare db from JSON with db from BlockChain
+  //         json_db.posts = db.posts.filter(p => {
+  //           // console.log(moment().diff(moment(p.date), "seconds"));
+  //           return moment().diff(moment(p.date), "seconds") > 60;
+  //         });
+  //         console.log("From BlockChain", chain_db);
+  //         console.log("From mydb.json", json_db);
+  //         console.log(JSON.stringify(chain_db) === JSON.stringify(json_db));
+  //       }
+  //     });
+  //   }
+  // } catch (err) {
+  //   console.error(err);
+  // }
 }
 
 app.use(express.json());
@@ -213,7 +213,7 @@ app.post("/posts", async (req, res) => {
   //////////////////// Testing part
 });
 
-// Update Post's Like
+// Update Post's Likes
 app.put("/posts/:id", (req, res) => {
   var updatePost;
   db.posts.forEach((p, idx) => {
@@ -223,6 +223,12 @@ app.put("/posts/:id", (req, res) => {
       break;
     }
   });
+
+  fs.writeFile("mydb.json", JSON.stringify(db, null, 4), "utf8", function(err) {
+    if (err) throw err;
+    console.log("UpdatePost complete");
+  });
+
   res.json(updatePost);
 });
 
