@@ -16,19 +16,25 @@ contract ForumApp {
         string category;
         string title;
         string content;
+        string user;
+        uint   date;
+        //uint[] image_hash;
     }
 
     Post[] posts;
     User[] users;
     string[] categorys;
 
-    function addPost(string memory id, string memory category,
-                     string memory title, string memory content) public {
+    function addPost(string memory id,    string memory category,
+                     string memory title, string memory content,
+                     string memory user,  uint   date) public {
         Post memory post = Post({
             id: id, 
             category: category, 
-            title: title, 
-            content: content
+            title:    title, 
+            content:  content,
+            user:     user, 
+            date:     date
         });
             
         uint postId = posts.push(post) - 1;
@@ -40,9 +46,14 @@ contract ForumApp {
     }
     
     function getPosts(uint idx) public view 
-    returns(string memory id, string memory category, string memory title, string memory content){
+    returns(string memory id,    string memory category, 
+            string memory title, string memory content,
+            string memory user,  uint   date){
+
         Post memory post = posts[idx];
-        return(post.id, post.category, post.title, post.content);
+        return(post.id,    post.category, 
+               post.title, post.content,
+               post.user,  post.date);
     } 
 
     function addCategory(string memory category) public {

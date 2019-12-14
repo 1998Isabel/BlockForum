@@ -143,7 +143,8 @@ setInterval(() => {
   if (newPosts.length > 0) console.log("NEWPOST", newPosts);
   newPosts.forEach(newPost => {
     contract.methods
-      .addPost(newPost.id, newPost.category, newPost.title, newPost.content)
+      .addPost(newPost.id, newPost.category, newPost.title, 
+               newPost.content, newPost.user, newPost.date)
       .send({ gas: 1000000, gasPrice: 100000000000, from: accounts[0] });
   });
 }, 5000);
