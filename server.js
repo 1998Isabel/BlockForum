@@ -87,8 +87,8 @@ async function setUp() {
             // console.log(moment().diff(moment(p.date), "seconds"));
             return moment().diff(moment(p.date), "seconds") > 60;
           });
-          // console.log("From BlockChain", chain_db);
-          // console.log("From mydb.json", json_db);
+          console.log("From BlockChain", chain_db);
+          console.log("From mydb.json", json_db);
           console.log(JSON.stringify(chain_db) === JSON.stringify(json_db));
         }
       });
@@ -97,7 +97,6 @@ async function setUp() {
     console.error(err);
   }
 }
-setUp();
 
 app.use(express.json());
 
@@ -165,7 +164,7 @@ app.post("/posts", async (req, res) => {
 
   fs.writeFile("mydb.json", JSON.stringify(db, null, 4), "utf8", function(err) {
     if (err) throw err;
-    console.log("complete");
+    console.log("Add complete");
   });
 
   res.json(newPost);
@@ -179,15 +178,13 @@ app.post("/posts", async (req, res) => {
 
 // Delete
 app.delete("/posts/:id", (req, res) => {
-  db.posts.filter(post => post.id !== req.params.id);
-  // db.posts = db.posts
-  //   .map(post => {
-  //     if (post.id === req.params.id) {
-  //       clearTimeout(post.timer);
-  //     }
-  //     return post;
-  //   })
-  //   .filter(post => post.id !== req.params.id);
+  db.posts = db.posts.filter(post => post.id !== req.params.id);
+
+  fs.writeFile("mydb.json", JSON.stringify(db, null, 4), "utf8", function(err) {
+    if (err) throw err;
+    console.log("Delete complete");
+  });
+
   res.json(db.posts);
 });
 
@@ -210,4 +207,5 @@ const port = process.env.PORT || 7000;
 
 app.listen(port, async () => {
   console.log(`Server started on port ${port}`);
+  setUp();
 });
