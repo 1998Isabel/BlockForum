@@ -55,7 +55,16 @@ async function setUp() {
       category: post.category,
       title: post.title,
       content: post.content,
-      date: 1576246664165
+      date: parseInt(post.date),
+      user: post.user
+    });
+  }
+  id = await contract.methods.getUserLength().call();
+  for (i = 0; i < id; i++) {
+    var user = await contract.methods.getUsers(i).call();
+    chain_db.users.push({
+      addr: user.addr,
+      name: user.name
     });
   }
   // console.log("DB from BlockChain", db);
@@ -105,6 +114,11 @@ app.get("/address", (req, res) => {
   res.json(accounts[0]);
 });
 
+// Get Duration
+app.get("/duration", (req, res) => {
+  res.json(60);
+});
+
 // Users METHODS
 //Get
 app.get("/user/:addr", (req, res) => {
@@ -116,13 +130,27 @@ app.get("/user/:addr", (req, res) => {
 });
 
 //Add
-app.post("/users", (req, res) => {
+app.post("/users", async (req, res) => {
   const newUser = {
     addr: req.body.addr,
     name: req.body.name
   };
   db.users.unshift(newUser);
+  contract.methods
+    .addUser(newUser.addr, newUser.name)
+    .send({ gas: 1000000, gasPrice: 100000000000, from: accounts[0] });
+
+  fs.writeFile("mydb.json", JSON.stringify(db, null, 4), "utf8", function(err) {
+    if (err) throw err;
+    console.log("AddUser complete");
+  });
   res.json(newUser.name);
+
+  //////////////////// Testing part
+  let id = await contract.methods.getUserLength().call();
+  console.log(id);
+  console.log(await contract.methods.getUsers(id - 1).call());
+  //////////////////// Testing part
 });
 
 // Posts METHODS
@@ -143,8 +171,14 @@ setInterval(() => {
   if (newPosts.length > 0) console.log("NEWPOST", newPosts);
   newPosts.forEach(newPost => {
     contract.methods
-      .addPost(newPost.id, newPost.category, newPost.title, 
-               newPost.content, newPost.user, newPost.date)
+      .addPost(
+        newPost.id,
+        newPost.category,
+        newPost.title,
+        newPost.content,
+        newPost.user,
+        newPost.date
+      )
       .send({ gas: 1000000, gasPrice: 100000000000, from: accounts[0] });
   });
 }, 5000);
@@ -165,7 +199,7 @@ app.post("/posts", async (req, res) => {
 
   fs.writeFile("mydb.json", JSON.stringify(db, null, 4), "utf8", function(err) {
     if (err) throw err;
-    console.log("Add complete");
+    console.log("AddPost complete");
   });
 
   res.json(newPost);
@@ -183,7 +217,7 @@ app.delete("/posts/:id", (req, res) => {
 
   fs.writeFile("mydb.json", JSON.stringify(db, null, 4), "utf8", function(err) {
     if (err) throw err;
-    console.log("Delete complete");
+    console.log("DeletePost complete");
   });
 
   res.json(db.posts);
