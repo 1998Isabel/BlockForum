@@ -5,7 +5,7 @@ class Header extends Component {
 	render() {
 		return (
 			<Navbar bg="dark" expand="lg" variant="dark">
-				<Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+				<Navbar.Brand href="#home">真。論壇</Navbar.Brand>
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
 				<Navbar.Collapse id="basic-navbar-nav">
 					<Nav className="mr-auto">
@@ -20,7 +20,7 @@ class Header extends Component {
 						</NavDropdown>
 					</Nav>
 					<Form inline>
-						<FormControl type="text" placeholder="Search" className="mr-sm-2" />
+						<FormControl type="text" placeholder="Search post..." className="mr-sm-2" />
 						<Button variant="outline-primary" onClick={this.props.showAccount}>Account</Button>
 					</Form>
 				</Navbar.Collapse>
