@@ -1,4 +1,6 @@
 const express = require("express");
+const IPFS = require('ipfs')
+
 // var db = require("./mydb.json");
 var db = {
   posts: [],
@@ -17,7 +19,10 @@ const web3 = new Web3(ethereumUri);
 const app = express();
 var contract = null;
 var accounts = null;
+var ipfs_node = null;
+
 async function setUp() {
+  // Getting smart contract
   var coinbase = await web3.eth.getCoinbase();
   console.log(coinbase);
   let balance = await web3.eth.getBalance(coinbase);
@@ -31,6 +36,10 @@ async function setUp() {
     ForumAppContract.abi,
     deployedNetwork && deployedNetwork.address
   );
+
+  // Getting ipfs node
+  ipfs_node = await IPFS.create();
+
   //console.log(contract)
 
   // Get db from Chain
@@ -193,9 +202,26 @@ app.post("/posts", async (req, res) => {
     content: req.body.content,
     date: req.body.date,
     user: req.body.user,
-    likes: 0
+    likes: 0 
   };
-
+  // if file != null add file to ipfs and save hash
+  if (req.body.file != null) {
+    let reader = new FileReader();
+    reader.readAsArrayBuffer(req.body.file);
+    reader.onloadend = async () => {
+      await ipfs_node.files.add(Buffer(reader.result), (err, res) => {
+        // If fail print error and return
+        if(err){
+          console.error(err);
+          return 
+        }
+        // If succeed add hash to newPost
+        newPost.imgHash = res[0].hash
+        console.log("Image added to ipfs! imgHash", newPost.imgHash)
+      })
+    }
+  }
+  
   // Push to db
   db.posts.unshift(newPost);
 
