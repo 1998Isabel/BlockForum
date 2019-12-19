@@ -1,5 +1,5 @@
 const express = require("express");
-const IPFS = require('ipfs')
+const IPFS = require("ipfs");
 
 // var db = require("./mydb.json");
 var db = {
@@ -106,9 +106,9 @@ async function setUp() {
   //           // console.log(moment().diff(moment(p.date), "seconds"));
   //           return moment().diff(moment(p.date), "seconds") > 60;
   //         });
-  //         console.log("From BlockChain", chain_db);
-  //         console.log("From mydb.json", json_db);
-  //         console.log(JSON.stringify(chain_db) === JSON.stringify(json_db));
+  //         // console.log("From BlockChain", chain_db);
+  //         // console.log("From mydb.json", json_db);
+  //         // console.log(JSON.stringify(chain_db) === JSON.stringify(json_db));
   //       }
   //     });
   //   }
@@ -202,26 +202,10 @@ app.post("/posts", async (req, res) => {
     content: req.body.content,
     date: req.body.date,
     user: req.body.user,
-    likes: 0 
+    likes: 0,
+    img: req.body.img
   };
-  // if file != null add file to ipfs and save hash
-  if (req.body.file != null) {
-    let reader = new FileReader();
-    reader.readAsArrayBuffer(req.body.file);
-    reader.onloadend = async () => {
-      await ipfs_node.files.add(Buffer(reader.result), (err, res) => {
-        // If fail print error and return
-        if(err){
-          console.error(err);
-          return 
-        }
-        // If succeed add hash to newPost
-        newPost.imgHash = res[0].hash
-        console.log("Image added to ipfs! imgHash", newPost.imgHash)
-      })
-    }
-  }
-  
+
   // Push to db
   db.posts.unshift(newPost);
 
@@ -247,9 +231,8 @@ app.put("/posts/:id", (req, res) => {
       db.posts[idx].likes += 1;
       updatePost = db.posts[idx];
       return true;
-    }
-    else {
-      return false
+    } else {
+      return false;
     }
   });
 
