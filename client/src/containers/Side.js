@@ -12,6 +12,14 @@ class Side extends Component {
       this.props.getPosts(ipfs_node);
   }
 
+  componentDidUpdate(prevProps) {
+    const { ipfs_node } = this.props.user;
+    if (ipfs_node != prevProps.user.ipfs_node) {
+      // console.log("GET POST")
+      this.props.getPosts(ipfs_node);
+    }
+  }
+
   render() {
     const sidelist = this.props.category.categories.map((c, index) => {
       const postnum = this.props.post.posts.filter(post => post.category === c)

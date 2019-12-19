@@ -12,11 +12,11 @@ export const getPosts = ipfs_node => dispatch => {
   axios.get("/posts").then(res => {
     // console.log(res.data)
     let newposts = res.data;
-    console.log("NEWPOSTS", newposts);
+    // console.log("NEWPOSTS", newposts);
     res.data.forEach(async (p, idx) => {
       if (p.img) {
         newposts[idx].img = (await ipfs_node.cat(p.img)).toString();
-        console.log(newposts[idx].img);
+        // console.log(newposts[idx].img);
       }
     });
     dispatch({

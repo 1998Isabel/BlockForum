@@ -7,6 +7,16 @@ class HomePage extends Component {
   componentDidMount() {
     const { ipfs_node } = this.props.user;
     if (ipfs_node) {
+		console.log("GET POST")
+		this.props.getPosts(ipfs_node);
+		setInterval(this.props.getPosts(ipfs_node), 5000);
+	}
+  }
+
+  componentDidUpdate(prevProps) {
+    const { ipfs_node } = this.props.user;
+    if (ipfs_node != prevProps.user.ipfs_node) {
+		// console.log("GET POST")
 		this.props.getPosts(ipfs_node);
 		setInterval(this.props.getPosts(ipfs_node), 5000);
 	}
@@ -22,7 +32,7 @@ class HomePage extends Component {
     return (
       <div>
         <h5>Posts</h5>
-        {postlist}
+        {this.props.user.loading?<h5>Loading</h5>:postlist}
       </div>
     );
   }
