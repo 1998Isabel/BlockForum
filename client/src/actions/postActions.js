@@ -1,5 +1,4 @@
 import axios from "axios";
-import IPFS from "ipfs";
 import {
   GET_POSTS,
   ADD_POST,
@@ -8,13 +7,7 @@ import {
   POSTS_LOADING
 } from "./types";
 
-var ipfs_node;
-async function setup() {
-  ipfs_node = await IPFS.create();
-}
-setup();
-
-export const getPosts = () => dispatch => {
+export const getPosts = ipfs_node => dispatch => {
   dispatch(setpostsLoading());
   axios.get("/posts").then(res => {
     // console.log(res.data)
@@ -33,7 +26,7 @@ export const getPosts = () => dispatch => {
   });
 };
 
-export const addPost = post => async dispatch => {
+export const addPost = (post, ipfs_node) => async dispatch => {
   console.log("ACTION_POST", post);
 
   await ipfs_node.add(post.img, (err, res) => {

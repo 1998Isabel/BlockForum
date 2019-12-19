@@ -6,8 +6,9 @@ import { getPosts } from "../actions/postActions";
 
 class Side extends Component {
   componentDidMount() {
+    const { ipfs_node } = this.props.user;
     this.props.getCategories();
-    this.props.getPosts();
+    this.props.getPosts(ipfs_node);
   }
 
   render() {
@@ -35,7 +36,8 @@ class Side extends Component {
 
 const mapStateToProps = state => ({
   category: state.category,
-  post: state.post
+  post: state.post,
+  user: state.user
 });
 
 export default connect(mapStateToProps, { getCategories, getPosts })(Side);

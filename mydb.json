@@ -1,0 +1,16 @@
+{
+    "posts": [],
+    "users": [
+        {
+            "addr": "0xE195c59BCF26fD36c82d1C720860127A5c1c4040",
+            "name": "Tiffany"
+        }
+    ],
+    "categories": [
+        "News",
+        "International",
+        "Sports",
+        "Entertainment",
+        "Economics"
+    ]
+}

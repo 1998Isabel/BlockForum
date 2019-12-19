@@ -46,7 +46,7 @@ class CreatePost extends Component {
     reader.readAsDataURL(event.target.files[0]);
   };
   handleSubmit = async () => {
-    const { web3, myAccount, serverAccount } = this.props.user;
+    const { web3, myAccount, serverAccount, ipfs_node } = this.props.user;
     var txnObject = {
       from: myAccount,
       to: serverAccount,
@@ -61,15 +61,18 @@ class CreatePost extends Component {
     console.log(balance1);
     const balance2 = await web3.eth.getBalance(serverAccount);
     console.log(balance2);
-    this.props.addPost({
-      id: uuid.v1(),
-      category: this.state.category,
-      title: this.state.title,
-      content: this.state.content,
-      date: Date.now(),
-      user: myAccount,
-      img: this.state.imgUrl
-    });
+    this.props.addPost(
+      {
+        id: uuid.v1(),
+        category: this.state.category,
+        title: this.state.title,
+        content: this.state.content,
+        date: Date.now(),
+        user: myAccount,
+        img: this.state.imgUrl
+      },
+      ipfs_node
+    );
     this.handleClose();
   };
 
