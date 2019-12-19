@@ -1,4 +1,5 @@
 const express = require("express");
+const IPFS = require("ipfs");
 // var db = require("./mydb.json");
 var db = {
   posts: [],
@@ -17,6 +18,8 @@ const web3 = new Web3(ethereumUri);
 const app = express();
 var contract = null;
 var accounts = null;
+var ipfs_node = null;
+
 async function setUp() {
   var coinbase = await web3.eth.getCoinbase();
   console.log(coinbase);
@@ -31,7 +34,9 @@ async function setUp() {
     ForumAppContract.abi,
     deployedNetwork && deployedNetwork.address
   );
-  //console.log(contract)
+
+  // Setup ipfs node
+  ipfs_node = await IPFS.create();
 
   // Get db from Chain
   var chain_db = {
@@ -45,20 +50,28 @@ async function setUp() {
       "Economics"
     ]
   };
+
+  // Getting Post from chain
   let id = await contract.methods.getPostLength().call();
-  console.log(id);
   var i;
   for (i = 0; i < id; i++) {
     var post = await contract.methods.getPosts(i).call();
+
+    // Get image from ipfs, post on chain only stores 'hash, post in db stores 'image' and 'hash'
+    var image = (await ipfs_node.cat(post.image_hash)).toString();
+    
     chain_db.posts.unshift({
       id: post.id,
       category: post.category,
       title: post.title,
       content: post.content,
       date: parseInt(post.date),
-      user: post.user
+      user: post.user,
+      image_hash: post.image_hash,
+      img:  image
     });
   }
+  // Getting User on chain
   id = await contract.methods.getUserLength().call();
   for (i = 0; i < id; i++) {
     var user = await contract.methods.getUsers(i).call();
@@ -128,8 +141,8 @@ app.get("/user/:addr", (req, res) => {
   if (user.length) name = user[0].name;
   res.json(name); // return
 });
-
-//Add
+ 
+// Add User
 app.post("/users", async (req, res) => {
   const newUser = {
     addr: req.body.addr,
@@ -161,7 +174,7 @@ app.get("/posts", (req, res) => {
 });
 
 // Post newPosts to Contract
-setInterval(() => {
+setInterval( () => {
   var checkTime = moment();
   var newPosts = db.posts.filter(p => {
     var sub = checkTime.diff(moment(p.date), "seconds");
@@ -177,7 +190,8 @@ setInterval(() => {
         newPost.title,
         newPost.content,
         newPost.user,
-        newPost.date
+        newPost.date,
+        newPost.img_hash // post on chain only stores image_hash
       )
       .send({ gas: 1000000, gasPrice: 100000000000, from: accounts[0] });
   });
@@ -185,15 +199,27 @@ setInterval(() => {
 
 // Add
 app.post("/posts", async (req, res) => {
-  const newPost = {
+
+  var newPost = {
     id: req.body.id,
     category: req.body.category,
     title: req.body.title,
     content: req.body.content,
     date: req.body.date,
-    user: req.body.user
+    user: req.body.user,
+    img: req.body.img // Store image to local db
   };
+  console.log("Image to add", req.body.img);
+  await ipfs_node.add(req.body.img, (err, res) => {
+    if(err){
+      console.log(err);
+      return
+    }
+    console.log("added to IPFS", res[0].hash);
+    newPost.img_hash = res[0].hash; // local db also stores image_hash
+    console.log(newPost);
 
+  })
   // Push to db
   db.posts.unshift(newPost);
 
@@ -209,6 +235,7 @@ app.post("/posts", async (req, res) => {
   console.log(id);
   console.log(await contract.methods.getPosts(id - 1).call());
   //////////////////// Testing part
+
 });
 
 // Delete
