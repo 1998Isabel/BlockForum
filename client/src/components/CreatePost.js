@@ -68,7 +68,7 @@ class CreatePost extends Component {
 			content: this.state.content,
 			date: Date.now(),
 			user: myAccount,
-			img: this.state.file,
+			img: this.state.imgUrl,
 		});
 		this.handleClose()
 	}

@@ -9,7 +9,8 @@ const initialState = {
     username: null,
     myAccount: null,
     serverAccount: null,
-    loading: false
+    loading: false,
+    duration: 0,
 }
 
 export default function(state = initialState, action) {

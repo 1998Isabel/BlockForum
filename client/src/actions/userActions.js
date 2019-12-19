@@ -13,6 +13,7 @@ export const loadWeb3 = () => async dispatch => {
         const accounts = await web3.eth.getAccounts();
         const serverAccount = (await axios.get('/address')).data;
         const username = (await axios.get(`/user/${accounts[0]}`)).data;
+        const duration = (await axios.get("/duration")).data;
         console.log(username)
         dispatch({
             type: LOAD_WEB3,
@@ -21,6 +22,7 @@ export const loadWeb3 = () => async dispatch => {
                 username: username,
                 myAccount: accounts[0],
                 serverAccount: serverAccount,
+                duration: duration
             }
         })
     } catch (error) {
