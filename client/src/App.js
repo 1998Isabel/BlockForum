@@ -20,7 +20,7 @@ class App extends Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.props.loadWeb3();
   }
 

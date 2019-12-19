@@ -8,7 +8,8 @@ class Side extends Component {
   componentDidMount() {
     const { ipfs_node } = this.props.user;
     this.props.getCategories();
-    this.props.getPosts(ipfs_node);
+    if (ipfs_node)
+      this.props.getPosts(ipfs_node);
   }
 
   render() {

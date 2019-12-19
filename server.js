@@ -37,9 +37,6 @@ async function setUp() {
     deployedNetwork && deployedNetwork.address
   );
 
-  // Getting ipfs node
-  ipfs_node = await IPFS.create();
-
   //console.log(contract)
 
   // Get db from Chain
@@ -66,7 +63,8 @@ async function setUp() {
       content: post.content,
       date: parseInt(post.date),
       user: post.user,
-      likes: 0
+      likes: 0,
+      img: post.image_hash,
     });
   }
   id = await contract.methods.getUserLength().call();
@@ -187,7 +185,8 @@ setInterval(() => {
         newPost.title,
         newPost.content,
         newPost.user,
-        newPost.date
+        newPost.date,
+        newPost.img
       )
       .send({ gas: 1000000, gasPrice: 100000000000, from: accounts[0] });
   });

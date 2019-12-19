@@ -6,8 +6,10 @@ import PostCard from "../components/PostCard";
 class HomePage extends Component {
   componentDidMount() {
     const { ipfs_node } = this.props.user;
-    this.props.getPosts(ipfs_node);
-    setInterval(this.props.getPosts(ipfs_node), 5000);
+    if (ipfs_node) {
+		this.props.getPosts(ipfs_node);
+		setInterval(this.props.getPosts(ipfs_node), 5000);
+	}
   }
 
   render() {

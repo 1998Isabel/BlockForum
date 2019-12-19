@@ -27,18 +27,6 @@ class PostCard extends Component {
     this.props.likePost(this.props.post.id)
   }
 
-  loadImgUrl = () => {
-    if (this.props.post.file) {
-      let reader = new FileReader();
-      reader.onloadend = () => {
-        return reader.result
-      }
-      reader.readAsDataURL(this.props.post.file)
-    }
-    else return null
-
-  }
-
   render() {
     let { post } = this.props;
     let time = moment(post.date).format("MMMM Do YYYY, h:mm:ss a");
@@ -56,7 +44,7 @@ class PostCard extends Component {
             {post.content}
           </Card.Text>
         </Card.Body>
-        <Card.Img variant="bottom" src={this.loadImgUrl()} />
+        <Card.Img variant="bottom" src={post.img} />
         <Card.Footer className="text-muted" style={{ height: "45px" }}>
           {time}
           <p className="text-primary" style={{ float: "right" }}>
