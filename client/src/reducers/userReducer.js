@@ -9,6 +9,7 @@ const initialState = {
     username: null,
     myAccount: null,
     serverAccount: null,
+    duration: 0,
     loading: false
 }
 
