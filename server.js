@@ -1,5 +1,6 @@
 const express = require("express");
 const IPFS = require("ipfs");
+var Formidable = require("formidable");
 // var db = require("./mydb.json");
 var db = {
   posts: [],
@@ -39,28 +40,19 @@ async function setUp() {
   ipfs_node = await IPFS.create();
 
   // Get db from Chain
-  var chain_db = {
-    posts: [],
-    users: [],
-    categories: [
-      "News",
-      "International",
-      "Sports",
-      "Entertainment",
-      "Economics"
-    ]
-  };
-
-  // Getting Post from chain
+  //// Getting Post from Chain
   let id = await contract.methods.getPostLength().call();
   var i;
   for (i = 0; i < id; i++) {
     var post = await contract.methods.getPosts(i).call();
 
     // Get image from ipfs, post on chain only stores 'hash, post in db stores 'image' and 'hash'
-    var image = (await ipfs_node.cat(post.image_hash)).toString();
-    
-    chain_db.posts.unshift({
+    var image;
+    if (post.image_hash.length) {
+      image = (await ipfs_node.cat(post.image_hash)).toString();
+    } else image = null;
+
+    db.posts.unshift({
       id: post.id,
       category: post.category,
       title: post.title,
@@ -68,32 +60,25 @@ async function setUp() {
       date: parseInt(post.date),
       user: post.user,
       image_hash: post.image_hash,
-      img:  image
+      img: image
     });
   }
-  // Getting User on chain
+  //// Getting User from Chain
   id = await contract.methods.getUserLength().call();
   for (i = 0; i < id; i++) {
     var user = await contract.methods.getUsers(i).call();
-    chain_db.users.push({
+    db.users.push({
       addr: user.addr,
       name: user.name
     });
   }
-  // console.log("DB from BlockChain", db);
-  // 每次交易都會在重整一次 會吃到BlockChain的db
+  console.log("DB from BlockChain", db);
+}
+
+// Check if db from Chain == db from mydb.json
+function verifyDB() {
   // Get db from jsonFile
-  var json_db = {
-    posts: [],
-    users: [],
-    categories: [
-      "News",
-      "International",
-      "Sports",
-      "Entertainment",
-      "Economics"
-    ]
-  };
+  var json_db;
   try {
     if (fs.existsSync("mydb.json")) {
       //file exists
@@ -101,17 +86,14 @@ async function setUp() {
         if (err) {
           console.log(err);
         } else {
-          db = JSON.parse(data); //now it an object
-          // console.log("db", db);
           json_db = JSON.parse(data);
           // Compare db from JSON with db from BlockChain
           json_db.posts = db.posts.filter(p => {
             // console.log(moment().diff(moment(p.date), "seconds"));
             return moment().diff(moment(p.date), "seconds") > 60;
           });
-          console.log("From BlockChain", chain_db);
           console.log("From mydb.json", json_db);
-          console.log(JSON.stringify(chain_db) === JSON.stringify(json_db));
+          console.log(JSON.stringify(db) === JSON.stringify(json_db));
         }
       });
     }
@@ -141,7 +123,7 @@ app.get("/user/:addr", (req, res) => {
   if (user.length) name = user[0].name;
   res.json(name); // return
 });
- 
+
 // Add User
 app.post("/users", async (req, res) => {
   const newUser = {
@@ -174,7 +156,7 @@ app.get("/posts", (req, res) => {
 });
 
 // Post newPosts to Contract
-setInterval( () => {
+setInterval(() => {
   var checkTime = moment();
   var newPosts = db.posts.filter(p => {
     var sub = checkTime.diff(moment(p.date), "seconds");
@@ -199,27 +181,43 @@ setInterval( () => {
 
 // Add
 app.post("/posts", async (req, res) => {
-
-  var newPost = {
-    id: req.body.id,
-    category: req.body.category,
-    title: req.body.title,
-    content: req.body.content,
-    date: req.body.date,
-    user: req.body.user,
-    img: req.body.img // Store image to local db
-  };
-  console.log("Image to add", req.body.img);
-  await ipfs_node.add(req.body.img, (err, res) => {
-    if(err){
-      console.log(err);
-      return
-    }
-    console.log("added to IPFS", res[0].hash);
-    newPost.img_hash = res[0].hash; // local db also stores image_hash
-    console.log(newPost);
-
-  })
+  var formData = new Formidable.IncomingForm();
+  var newPost = await new Promise(function(resolve, reject) {
+    formData.parse(req, function(err, fields, files) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(fields);
+    });
+  });
+  newPost.date = parseInt(newPost.date);
+  if (newPost.img === "null") newPost.img = null;
+  // for (var data of req.body) {
+  //   console.log("formData", data);
+  // }
+  // var newPost = {
+  //   id: req.body.id,
+  //   category: req.body.category,
+  //   title: req.body.title,
+  //   content: req.body.content,
+  //   date: req.body.date,
+  //   user: req.body.user,
+  //   img: req.body.img // Store image to local db
+  // };
+  console.log("Image to add", newPost.img);
+  if (newPost.img) {
+    console.log("add image to ipfs");
+    await ipfs_node.add(newPost.img, (err, res) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log("added to IPFS", res[0].hash);
+      newPost.img_hash = res[0].hash; // local db also stores image_hash
+    });
+  } else newPost.img_hash = "";
+  console.log(newPost);
   // Push to db
   db.posts.unshift(newPost);
 
@@ -235,7 +233,6 @@ app.post("/posts", async (req, res) => {
   console.log(id);
   console.log(await contract.methods.getPosts(id - 1).call());
   //////////////////// Testing part
-
 });
 
 // Delete
