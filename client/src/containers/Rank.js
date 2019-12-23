@@ -20,7 +20,7 @@ class Rank extends Component {
 						<h5 className="mb-1">{p.title}</h5>
 						<small className="text-muted">{timediff} days ago</small>
 					</div>
-					<p class="mb-1">{p.content}</p>
+					<p class="mb-1">{p.content.substring(0,30)}...</p>
 					<small class="text-muted">
 						{p.category}
 						<span

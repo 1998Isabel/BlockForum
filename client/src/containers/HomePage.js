@@ -30,10 +30,19 @@ class HomePage extends Component {
 			)
 		})
 
+		const notice = () => {
+			if (postlist.length === 0)
+				return(
+					<p>No posts yet. Go and add one!</p>
+				)
+			return
+		}
+
 		return (
 			<div>
 			<h5>{header}</h5>
 				{postlist}
+				{notice()}
 			</div>
 		);
 	}

@@ -32,14 +32,19 @@ export default function (state = initialState, action) {
                 posts: state.posts.filter(POST => POST.id !== action.payload)
             };
         case LIKE_POST:
+            let updateposts = state.posts
+            updateposts.some((p, idx) => {
+                if (p.id === action.payload.id) {
+                    updateposts[idx]= action.payload;
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+            updateposts.sort((a,b)=>(b.date-a.date))
             return {
                 ...state,
-                posts: state.posts.map(post => {
-                    if (post.id === action.payload.id)
-                        return action.payload
-                    else
-                        return post
-                })
+                posts: updateposts
             };
         case SELECT_POST:
             return {
