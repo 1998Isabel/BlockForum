@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./../css/bootstrap.min.css";
 import { connect } from "react-redux";
 import { getCategories, changeCategory } from "../actions/categoryActions";
-import { getPosts } from "../actions/postActions";
+import { getPosts, selectPost } from "../actions/postActions";
 
 class Side extends Component {
   componentDidMount() {
@@ -10,15 +10,20 @@ class Side extends Component {
     this.props.getPosts();
   }
 
+  handleChange = (c) => {
+		this.props.changeCategory(c);
+		this.props.selectPost(null);
+	}
+
   render() {
-    const { post, category, changeCategory } = this.props;
+    const { post, category } = this.props;
     const sidelist = category.categories.map((c, index) => {
       const postnum = post.posts.filter(p => p.category === c).length;
       return (
         <li
           key={index}
           className="list-group-item d-flex justify-content-between align-items-center"
-          onClick={()=>changeCategory(c)}
+          onClick={()=>this.handleChange(c)}
           style={{cursor: "pointer"}}
         >
           {c}
@@ -40,4 +45,4 @@ const mapStateToProps = state => ({
   post: state.post
 });
 
-export default connect(mapStateToProps, { getCategories, getPosts, changeCategory })(Side);
+export default connect(mapStateToProps, { getCategories, getPosts, selectPost, changeCategory })(Side);

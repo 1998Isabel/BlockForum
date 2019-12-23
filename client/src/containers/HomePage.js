@@ -12,10 +12,16 @@ class HomePage extends Component {
 	render() {
 		const { post, category } = this.props
 		let posts = post.posts;
+		let header =(<h5>Posts</h5>)
 		if (category.show) {
-			posts = post.posts.filter(p => {
+			posts = posts.filter(p => {
 				return (p.category === category.show)
 			})
+			header = (<h5>Posts <em className="text-secondary">{category.show}</em></h5>)
+		}
+		if (post.selected) {
+			posts = post.posts.filter(p => p.id === post.selected)
+			header = (<h5>Post <em className="text-secondary">Selected</em></h5>)
 		}
 
 		const postlist = posts.map((p, index) => {
@@ -26,7 +32,7 @@ class HomePage extends Component {
 
 		return (
 			<div>
-			<h5>Posts <em className="text-secondary">{category.show}</em></h5>
+			<h5>{header}</h5>
 				{postlist}
 			</div>
 		);

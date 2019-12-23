@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_POSTS, ADD_POST, DELETE_POST, LIKE_POST, POSTS_LOADING } from "./types";
+import { GET_POSTS, ADD_POST, DELETE_POST, LIKE_POST, SELECT_POST, POSTS_LOADING } from "./types";
 
 export const getPosts = () => dispatch => {
   dispatch(setpostsLoading());
@@ -50,6 +50,13 @@ export const likePost = id => dispatch => {
     })
   );
 };
+
+export const selectPost = id => dispatch => {
+  dispatch({
+    type: SELECT_POST,
+    payload: id
+  })
+}
 
 export const setpostsLoading = () => {
   return {

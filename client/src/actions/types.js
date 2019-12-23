@@ -2,6 +2,7 @@ export const GET_POSTS = 'GET_POSTS';
 export const ADD_POST = 'ADD_POST';
 export const DELETE_POST = 'DELETE_POST';
 export const LIKE_POST = 'LIKE_POST';
+export const SELECT_POST = 'SELECT_POST';
 export const POSTS_LOADING = 'POSTS_LOADING';
 export const GET_CATEGORIES = 'GET_CATEGORYS';
 export const ADD_CATEGORY = 'ADD_CATEGORY';

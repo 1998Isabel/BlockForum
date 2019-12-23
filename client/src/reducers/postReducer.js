@@ -3,10 +3,12 @@ import {
     ADD_POST,
     LIKE_POST,
     DELETE_POST,
+    SELECT_POST,
     POSTS_LOADING
 } from '../actions/types';
 
 const initialState = {
+    selected: null,
     posts: [],
     loading: false
 }
@@ -39,6 +41,11 @@ export default function (state = initialState, action) {
                         return post
                 })
             };
+        case SELECT_POST:
+            return {
+                ...state,
+                selected: action.payload
+            }
         case POSTS_LOADING:
             return {
                 ...state,

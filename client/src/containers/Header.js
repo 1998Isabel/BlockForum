@@ -2,25 +2,30 @@ import React, { Component } from 'react';
 import { Nav, Navbar, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { changeCategory } from '../actions/categoryActions';
+import { selectPost } from '../actions/postActions';
 
 class Header extends Component {
+	handleChange = (c) => {
+		this.props.changeCategory(c);
+		this.props.selectPost(null);
+	}
 	render() {
-		const { category, changeCategory } = this.props;
+		const { category } = this.props;
 		const categoryItems = category.categories.map((c, idx) => {
 			return (
-			<NavDropdown.Item key={idx} onClick={()=>changeCategory(c)}>{c}</NavDropdown.Item>
+			<NavDropdown.Item key={idx} onClick={()=>this.handleChange(c)}>{c}</NavDropdown.Item>
 			)
 		})
 		return (
 			<Navbar bg="dark" expand="lg" variant="dark">
-				<Navbar.Brand onClick={()=>changeCategory(null)} style={{cursor: "pointer"}}>真。論壇</Navbar.Brand>
+				<Navbar.Brand onClick={()=>this.handleChange(null)} style={{cursor: "pointer"}}>真。論壇</Navbar.Brand>
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
 				<Navbar.Collapse id="basic-navbar-nav">
 					<Nav className="mr-auto">
 						<NavDropdown title="Categories" id="basic-nav-dropdown">
 							{categoryItems}
 						</NavDropdown>
-						<Nav.Link >Popular</Nav.Link>
+						{/* <Nav.Link >Popular</Nav.Link> */}
 					</Nav>
 					<Form inline>
 						<FormControl type="text" placeholder="Search post..." className="mr-sm-2" />
@@ -36,4 +41,4 @@ const mapStateToProps = (state) => ({
 	category: state.category,
 });
 
-export default connect(mapStateToProps, { changeCategory })(Header);
+export default connect(mapStateToProps, { changeCategory, selectPost })(Header);

@@ -1,30 +1,47 @@
-import React from 'react';
-import "./../css/bootstrap.min.css"
+import React, { Component } from 'react';
+import moment from "moment";
+import { ListGroup } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { selectPost } from '../actions/postActions';
 
-function Rank() {
-	return (
-		<div style={{ marginTop: "20px" }}>
-			<h5>Popular</h5>
-			<div className="list-group">
-				<div className="list-group-item list-group-item-action flex-column align-items-start active">
+class Rank extends Component {
+	render() {
+		const { post, selectPost } = this.props;
+		let rankposts = post.posts.sort((a, b) => {
+			return (b.likes - a.likes)
+		})
+		const ranklist = rankposts.slice(0, 3).map((p, idx) => {
+			const color = (idx === 0) ? " text-white bg-secondary" : null
+			const now = moment();
+			const timediff = now.diff(p.Date, "days")
+			return (
+				<a key={idx} onClick={()=>selectPost(p.id)} className={"list-group-item list-group-item-action flex-column align-items-start" + color}>
 					<div className="d-flex w-100 justify-content-between">
-						<h5 className="mb-1">List group item heading</h5>
-						<small>3 days ago</small>
+						<h5 className="mb-1">{p.title}</h5>
+						<small className="text-muted">{timediff} days ago</small>
 					</div>
-					<p className="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-					<small>Donec id elit non mi porta.</small>
-				</div>
-				<div className="list-group-item list-group-item-action flex-column align-items-start">
-					<div className="d-flex w-100 justify-content-between">
-						<h5 className="mb-1">List group item heading</h5>
-						<small className="text-muted">3 days ago</small>
-					</div>
-					<p className="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-					<small className="text-muted">Donec id elit non mi porta.</small>
-				</div>
-			</div>
-		</div>
-	);
+					<p class="mb-1">{p.content}</p>
+					<small class="text-muted">
+						{p.category}
+						<span
+							className="text-primary"
+							style={{ marginLeft: "10px", float: "right" }}
+						>
+							{p.likes} Likes
+						</span>
+					</small>
+				</a>
+			)
+		})
+		return (
+			<ListGroup style={{ marginTop: "20px" }}>
+				{ranklist}
+			</ListGroup>
+		);
+	}
 }
+const mapStateToProps = (state) => ({
+	post: state.post,
+});
 
-export default Rank;
+export default connect(mapStateToProps, { selectPost })(Rank);
