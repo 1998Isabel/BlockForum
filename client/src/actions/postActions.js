@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_POSTS, ADD_POST, DELETE_POST, POSTS_LOADING } from "./types";
+import { GET_POSTS, ADD_POST, DELETE_POST, LIKE_POST, POSTS_LOADING } from "./types";
 
 export const getPosts = () => dispatch => {
   dispatch(setpostsLoading());
@@ -38,6 +38,15 @@ export const deletePost = id => dispatch => {
     dispatch({
       type: DELETE_POST,
       payload: id
+    })
+  );
+};
+
+export const likePost = id => dispatch => {
+  axios.put(`/posts/${id}`).then(res =>
+    dispatch({
+      type: LIKE_POST,
+      payload: res.data
     })
   );
 };

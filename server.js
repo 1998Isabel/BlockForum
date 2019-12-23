@@ -60,7 +60,8 @@ async function setUp() {
       date: parseInt(post.date),
       user: post.user,
       image_hash: post.image_hash,
-      img: image
+      img: image,
+      likes: 0
     });
   }
   //// Getting User from Chain
@@ -192,6 +193,7 @@ app.post("/posts", async (req, res) => {
     });
   });
   newPost.date = parseInt(newPost.date);
+  newPost.likes = 0
   if (newPost.img === "null") newPost.img = null;
   // for (var data of req.body) {
   //   console.log("formData", data);
@@ -245,6 +247,27 @@ app.delete("/posts/:id", (req, res) => {
   });
 
   res.json(db.posts);
+});
+
+// Update Post's Likes
+app.put("/posts/:id", (req, res) => {
+  var updatePost;
+  db.posts.some((p, idx) => {
+    if (p.id === req.params.id) {
+      db.posts[idx].likes += 1;
+      updatePost = db.posts[idx];
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  fs.writeFile("mydb.json", JSON.stringify(db, null, 4), "utf8", function(err) {
+    if (err) throw err;
+    console.log("UpdatePost complete");
+  });
+
+  res.json(updatePost);
 });
 
 // Categories METHODS
