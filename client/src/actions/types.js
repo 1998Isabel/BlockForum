@@ -6,6 +6,7 @@ export const POSTS_LOADING = 'POSTS_LOADING';
 export const GET_CATEGORIES = 'GET_CATEGORYS';
 export const ADD_CATEGORY = 'ADD_CATEGORY';
 export const DELETE_CATEGORY = 'DELETE_CATEGORY';
+export const CHANGE_CATEGORY = 'CHANGE_CATEGORY';
 export const CATEGORIES_LOADING = 'CATEGORYS_LOADING';
 export const GET_USER = 'GET_USER';
 export const ADD_USER = 'ADD_USER';

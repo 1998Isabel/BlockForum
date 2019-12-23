@@ -1,23 +1,26 @@
 import React, { Component } from 'react';
 import { Nav, Navbar, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { changeCategory } from '../actions/categoryActions';
 
 class Header extends Component {
 	render() {
+		const { category, changeCategory } = this.props;
+		const categoryItems = category.categories.map((c, idx) => {
+			return (
+			<NavDropdown.Item key={idx} onClick={()=>changeCategory(c)}>{c}</NavDropdown.Item>
+			)
+		})
 		return (
 			<Navbar bg="dark" expand="lg" variant="dark">
-				<Navbar.Brand href="#home">真。論壇</Navbar.Brand>
+				<Navbar.Brand onClick={()=>changeCategory(null)} style={{cursor: "pointer"}}>真。論壇</Navbar.Brand>
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
 				<Navbar.Collapse id="basic-navbar-nav">
 					<Nav className="mr-auto">
-						<Nav.Link href="#home">Home</Nav.Link>
-						<Nav.Link href="#link">Link</Nav.Link>
-						<NavDropdown title="Dropdown" id="basic-nav-dropdown">
-							<NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-							<NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-							<NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-							<NavDropdown.Divider />
-							<NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+						<NavDropdown title="Categories" id="basic-nav-dropdown">
+							{categoryItems}
 						</NavDropdown>
+						<Nav.Link >Popular</Nav.Link>
 					</Nav>
 					<Form inline>
 						<FormControl type="text" placeholder="Search post..." className="mr-sm-2" />
@@ -29,4 +32,8 @@ class Header extends Component {
 	}
 }
 
-export default Header;
+const mapStateToProps = (state) => ({
+	category: state.category,
+});
+
+export default connect(mapStateToProps, { changeCategory })(Header);

@@ -3,6 +3,7 @@ import {
     GET_CATEGORIES, 
     ADD_CATEGORY, 
     DELETE_CATEGORY, 
+    CHANGE_CATEGORY,
     CATEGORIES_LOADING } from './types';
 
 export const getCategories = () => dispatch => {
@@ -15,6 +16,13 @@ export const getCategories = () => dispatch => {
                 type: GET_CATEGORIES,
                 payload: res.data
             })});
+};
+
+export const changeCategory = category => dispatch => {
+    dispatch({
+        type: CHANGE_CATEGORY,
+        payload: category,
+    });
 };
 
 export const addCategory = category => dispatch => {

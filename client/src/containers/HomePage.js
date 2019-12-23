@@ -10,9 +10,15 @@ class HomePage extends Component {
 	}
 
 	render() {
-		const { posts } = this.props.post
-		console.log(posts)
-		const postlist = this.props.post.posts.map((p, index) => {
+		const { post, category } = this.props
+		let posts = post.posts;
+		if (category.show) {
+			posts = post.posts.filter(p => {
+				return (p.category === category.show)
+			})
+		}
+
+		const postlist = posts.map((p, index) => {
 			return (
 				<PostCard key={index} post={p} />
 			)
@@ -20,7 +26,7 @@ class HomePage extends Component {
 
 		return (
 			<div>
-				<h5>Posts</h5>
+			<h5>Posts <em className="text-secondary">{category.show}</em></h5>
 				{postlist}
 			</div>
 		);
@@ -28,7 +34,8 @@ class HomePage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-	post: state.post
+	post: state.post,
+	category: state.category
 });
 
 export default connect(mapStateToProps, { getPosts, addPost })(HomePage);
