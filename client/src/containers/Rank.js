@@ -7,7 +7,7 @@ import { selectPost } from '../actions/postActions';
 class Rank extends Component {
 	render() {
 		const { post, selectPost } = this.props;
-		let rankposts = post.posts.sort((a, b) => {
+		let rankposts = post.posts.slice(0).sort((a, b) => {
 			return (b.likes - a.likes)
 		})
 		const ranklist = rankposts.slice(0, 3).map((p, idx) => {
