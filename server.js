@@ -45,6 +45,7 @@ async function setUp() {
   var i;
   for (i = 0; i < id; i++) {
     var post = await contract.methods.getPosts(i).call();
+    // var post_hash = await contract.methods.getPostsHash(i).call();
 
     // Get image from ipfs, post on chain only stores 'hash, post in db stores 'image' and 'hash'
     var image;
@@ -62,6 +63,7 @@ async function setUp() {
       image_hash: post.image_hash,
       img: image,
       likes: 0
+      //post_hash: post_hash
     });
   }
   //// Getting User from Chain
@@ -175,6 +177,7 @@ setInterval(() => {
         newPost.user,
         newPost.date,
         newPost.img_hash // post on chain only stores image_hash
+        //newPost.post_hash 
       )
       .send({ gas: 1000000, gasPrice: 100000000000, from: accounts[0] });
   });
