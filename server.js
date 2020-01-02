@@ -7,6 +7,7 @@ var db = {
   users: [],
   categories: ["News", "International", "Sports", "Entertainment", "Economics"]
 };
+var postHashes = [];
 const moment = require("moment");
 const fs = require("fs");
 // const hash = require("object-hash");
@@ -20,6 +21,11 @@ const app = express();
 var contract = null;
 var accounts = null;
 var ipfs_node = null;
+var hashCode = s =>
+  s.split("").reduce((a, b) => {
+    a = (a << 5) - a + b.charCodeAt(0);
+    return a & a;
+  }, 0);
 
 async function setUp() {
   var coinbase = await web3.eth.getCoinbase();
@@ -45,7 +51,6 @@ async function setUp() {
   var i;
   for (i = 0; i < id; i++) {
     var post = await contract.methods.getPosts(i).call();
-    // var post_hash = await contract.methods.getPostsHash(i).call();
 
     // Get image from ipfs, post on chain only stores 'hash, post in db stores 'image' and 'hash'
     var image;
@@ -60,11 +65,29 @@ async function setUp() {
       content: post.content,
       date: parseInt(post.date),
       user: post.user,
-      image_hash: post.image_hash,
       img: image,
-      likes: 0
-      //post_hash: post_hash
+      likes: 0,
+      image_hash: post.image_hash
     });
+  }
+  try {
+    if (fs.existsSync("mydb.json")) {
+      //file exists
+      fs.readFile("mydb.json", "utf8", function readFileCallback(err, data) {
+        if (err) {
+          console.log(err);
+        } else {
+          json_db = JSON.parse(data);
+          // Compare db from JSON with db from BlockChain
+          var newPosts = json_db.posts.filter(p => {
+            return moment().diff(moment(p.date), "seconds") < 40;
+          });
+          newPosts.forEach(p => db.posts.unshift(p));
+        }
+      });
+    }
+  } catch (err) {
+    console.error(err);
   }
   //// Getting User from Chain
   id = await contract.methods.getUserLength().call();
@@ -75,7 +98,21 @@ async function setUp() {
       name: user.name
     });
   }
-  console.log("DB from BlockChain", db);
+  console.log("DB from BlockChain", db.posts.length);
+  fs.writeFile("mydb.json", JSON.stringify(db, null, 4), "utf8", function(err) {
+    if (err) throw err;
+    console.log("AddPost complete");
+  });
+
+  id = await contract.methods.getPostHashLength().call();
+  for (i = 0; i < id; i++) {
+    var h = await contract.methods.getPostHashes(i).call();
+    postHashes.unshift({
+      post_id: h.id,
+      post_hash: h.post_hash
+    });
+  }
+  console.log("Post Hashes", postHashes[0]);
 }
 
 // Check if db from Chain == db from mydb.json
@@ -91,12 +128,18 @@ function verifyDB() {
         } else {
           json_db = JSON.parse(data);
           // Compare db from JSON with db from BlockChain
-          json_db.posts = db.posts.filter(p => {
-            // console.log(moment().diff(moment(p.date), "seconds"));
-            return moment().diff(moment(p.date), "seconds") > 60;
+          var newPosts = json_db.posts.filter(p => {
+            return moment().diff(moment(p.date), "seconds") < 40;
           });
-          console.log("From mydb.json", json_db);
-          console.log(JSON.stringify(db) === JSON.stringify(json_db));
+
+          newPosts.forEach(newPost => {
+            let verify_hash = String(hashCode(JSON.stringify(newPost)));
+            console.log(
+              "Verify json newPost",
+              postHashes.filter(p => p.post_id === newPost.id)[0].post_hash ===
+                verify_hash
+            );
+          });
         }
       });
     }
@@ -114,7 +157,7 @@ app.get("/address", (req, res) => {
 
 // Get Duration
 app.get("/duration", (req, res) => {
-  res.json(60);
+  res.json(40);
 });
 
 // Users METHODS
@@ -163,11 +206,21 @@ setInterval(() => {
   var checkTime = moment();
   var newPosts = db.posts.filter(p => {
     var sub = checkTime.diff(moment(p.date), "seconds");
-    if (sub < 60) console.log(sub);
-    return sub >= 60 && sub < 65;
+    if (sub < 40) console.log(sub);
+    return sub >= 40 && sub < 45;
   });
-  if (newPosts.length > 0) console.log("NEWPOST", newPosts);
+  if (newPosts.length > 0) console.log("NEWPOST", newPosts.length);
   newPosts.forEach(newPost => {
+    let verify_hash = String(hashCode(JSON.stringify(newPost)));
+    let verify =
+      postHashes.filter(p => p.post_id === newPost.id)[0].post_hash ===
+      verify_hash;
+    console.log("Verify json newPost", verify);
+    if (!verify) {
+      console.log("post has been changed!");
+      db.posts = db.posts.filter(p => p.id !== newPost.id);
+      return;
+    }
     contract.methods
       .addPost(
         newPost.id,
@@ -176,8 +229,7 @@ setInterval(() => {
         newPost.content,
         newPost.user,
         newPost.date,
-        newPost.img_hash // post on chain only stores image_hash
-        //newPost.post_hash 
+        newPost.image_hash // post on chain only stores image_hash
       )
       .send({ gas: 1000000, gasPrice: 100000000000, from: accounts[0] });
   });
@@ -196,7 +248,7 @@ app.post("/posts", async (req, res) => {
     });
   });
   newPost.date = parseInt(newPost.date);
-  newPost.likes = 0
+  newPost.likes = 0;
   if (newPost.img === "null") newPost.img = null;
   // for (var data of req.body) {
   //   console.log("formData", data);
@@ -210,28 +262,60 @@ app.post("/posts", async (req, res) => {
   //   user: req.body.user,
   //   img: req.body.img // Store image to local db
   // };
-  console.log("Image to add", newPost.img);
+  // console.log("Image to add", newPost.img);
   if (newPost.img) {
     console.log("add image to ipfs");
-    await ipfs_node.add(newPost.img, (err, res) => {
+    await ipfs_node.add(newPost.img, (err, res2) => {
       if (err) {
         console.log(err);
         return;
       }
-      console.log("added to IPFS", res[0].hash);
-      newPost.img_hash = res[0].hash; // local db also stores image_hash
+      console.log("added to IPFS", res2[0].hash);
+      newPost.image_hash = res2[0].hash; // local db also stores image_hash
+
+      // Push to db
+      db.posts.unshift(newPost);
+      fs.writeFile("mydb.json", JSON.stringify(db, null, 4), "utf8", function(
+        err
+      ) {
+        if (err) throw err;
+        console.log("AddPost complete");
+      });
+
+      // Add PostHash to verify newPost
+      let post_hash = String(hashCode(JSON.stringify(newPost)));
+      contract.methods
+        .addPostHash(newPost.id, post_hash)
+        .send({ gas: 1000000, gasPrice: 1000000, from: accounts[0] });
+
+      postHashes.unshift({ post_id: newPost.id, post_hash: post_hash });
+      console.log(postHashes);
+
+      res.json(newPost);
     });
-  } else newPost.img_hash = "";
-  console.log(newPost);
-  // Push to db
-  db.posts.unshift(newPost);
+  } else {
+    newPost.image_hash = "";
+    // Push to db
+    db.posts.unshift(newPost);
+    fs.writeFile("mydb.json", JSON.stringify(db, null, 4), "utf8", function(
+      err
+    ) {
+      if (err) throw err;
+      console.log("AddPost complete");
+    });
 
-  fs.writeFile("mydb.json", JSON.stringify(db, null, 4), "utf8", function(err) {
-    if (err) throw err;
-    console.log("AddPost complete");
-  });
+    // Add PostHash to verify newPost
+    let post_hash = String(hashCode(JSON.stringify(newPost)));
+    let result = await contract.methods
+      .addPostHash(newPost.id, post_hash)
+      .send({ gas: 1000000, gasPrice: 1000000, from: accounts[0] });
+    console.log("await postHash", result);
 
-  res.json(newPost);
+    postHashes.unshift({ post_id: newPost.id, post_hash: post_hash });
+    console.log(postHashes);
+
+    res.json(newPost);
+  }
 
   //////////////////// Testing part
   let id = await contract.methods.getPostLength().call();
