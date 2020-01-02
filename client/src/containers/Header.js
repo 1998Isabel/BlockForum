@@ -18,14 +18,13 @@ class Header extends Component {
 		})
 		return (
 			<Navbar bg="dark" expand="lg" variant="dark">
-				<Navbar.Brand onClick={()=>this.handleChange(null)} style={{cursor: "pointer"}}>真。論壇</Navbar.Brand>
+				<Navbar.Brand onClick={()=>this.handleChange(null)} style={{cursor: "pointer"}}>Block Forum</Navbar.Brand>
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
 				<Navbar.Collapse id="basic-navbar-nav">
 					<Nav className="mr-auto">
 						<NavDropdown title="Categories" id="basic-nav-dropdown">
 							{categoryItems}
 						</NavDropdown>
-						{/* <Nav.Link >Popular</Nav.Link> */}
 					</Nav>
 					<Form inline>
 						<FormControl type="text" placeholder="Search post..." className="mr-sm-2" />

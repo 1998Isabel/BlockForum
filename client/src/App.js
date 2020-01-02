@@ -37,7 +37,7 @@ class App extends Component {
           onHide={() => this.handleShowAccount(false)}
         />
         <Header showAccount={() => this.handleShowAccount(true)}/>
-        <div className="container" style={{ marginTop: "70px" }}>
+        <div className="container" style={{ marginTop: "30px" }}>
           <Body />
           <div className="row">
             <div className="col-3">
