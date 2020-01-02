@@ -26,6 +26,7 @@ var hashCode = s =>
     a = (a << 5) - a + b.charCodeAt(0);
     return a & a;
   }, 0);
+var duration = 45;
 
 async function setUp() {
   var coinbase = await web3.eth.getCoinbase();
@@ -80,7 +81,7 @@ async function setUp() {
           json_db = JSON.parse(data);
           // Compare db from JSON with db from BlockChain
           var newPosts = json_db.posts.filter(p => {
-            return moment().diff(moment(p.date), "seconds") < 40;
+            return moment().diff(moment(p.date), "seconds") < duration;
           });
           newPosts.forEach(p => db.posts.unshift(p));
         }
@@ -129,7 +130,7 @@ function verifyDB() {
           json_db = JSON.parse(data);
           // Compare db from JSON with db from BlockChain
           var newPosts = json_db.posts.filter(p => {
-            return moment().diff(moment(p.date), "seconds") < 40;
+            return moment().diff(moment(p.date), "seconds") < duration;
           });
 
           newPosts.forEach(newPost => {
@@ -157,7 +158,7 @@ app.get("/address", (req, res) => {
 
 // Get Duration
 app.get("/duration", (req, res) => {
-  res.json(40);
+  res.json(duration);
 });
 
 // Users METHODS
@@ -206,8 +207,8 @@ setInterval(() => {
   var checkTime = moment();
   var newPosts = db.posts.filter(p => {
     var sub = checkTime.diff(moment(p.date), "seconds");
-    if (sub < 40) console.log(sub);
-    return sub >= 40 && sub < 45;
+    if (sub < duration) console.log(sub);
+    return sub >= duration && sub < duration + 5;
   });
   if (newPosts.length > 0) console.log("NEWPOST", newPosts.length);
   newPosts.forEach(newPost => {
@@ -219,6 +220,12 @@ setInterval(() => {
     if (!verify) {
       console.log("post has been changed!");
       db.posts = db.posts.filter(p => p.id !== newPost.id);
+      fs.writeFile("mydb.json", JSON.stringify(db, null, 4), "utf8", function(
+        err
+      ) {
+        if (err) throw err;
+        console.log("Delete Changed Post");
+      });
       return;
     }
     contract.methods
@@ -284,12 +291,12 @@ app.post("/posts", async (req, res) => {
 
       // Add PostHash to verify newPost
       let post_hash = String(hashCode(JSON.stringify(newPost)));
-      contract.methods
+      await contract.methods
         .addPostHash(newPost.id, post_hash)
         .send({ gas: 1000000, gasPrice: 1000000, from: accounts[0] });
 
       postHashes.unshift({ post_id: newPost.id, post_hash: post_hash });
-      console.log(postHashes);
+      console.log(postHashes[0]);
 
       res.json(newPost);
     });
@@ -306,13 +313,12 @@ app.post("/posts", async (req, res) => {
 
     // Add PostHash to verify newPost
     let post_hash = String(hashCode(JSON.stringify(newPost)));
-    let result = await contract.methods
+    await contract.methods
       .addPostHash(newPost.id, post_hash)
       .send({ gas: 1000000, gasPrice: 1000000, from: accounts[0] });
-    console.log("await postHash", result);
 
     postHashes.unshift({ post_id: newPost.id, post_hash: post_hash });
-    console.log(postHashes);
+    console.log(postHashes[0]);
 
     res.json(newPost);
   }
