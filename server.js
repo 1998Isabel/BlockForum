@@ -212,6 +212,8 @@ setInterval(() => {
   });
   if (newPosts.length > 0) console.log("NEWPOST", newPosts.length);
   newPosts.forEach(newPost => {
+    let l = newPost.likes;
+    newPost.likes = 0;
     let verify_hash = String(hashCode(JSON.stringify(newPost)));
     let verify =
       postHashes.filter(p => p.post_id === newPost.id)[0].post_hash ===
@@ -239,6 +241,7 @@ setInterval(() => {
         newPost.image_hash // post on chain only stores image_hash
       )
       .send({ gas: 1000000, gasPrice: 100000000000, from: accounts[0] });
+    newPost.likes = l;
   });
 }, 5000);
 
@@ -272,7 +275,7 @@ app.post("/posts", async (req, res) => {
   // console.log("Image to add", newPost.img);
   if (newPost.img) {
     console.log("add image to ipfs");
-    await ipfs_node.add(newPost.img, (err, res2) => {
+    await ipfs_node.add(newPost.img, async (err, res2) => {
       if (err) {
         console.log(err);
         return;
