@@ -26,7 +26,7 @@ var hashCode = s =>
     a = (a << 5) - a + b.charCodeAt(0);
     return a & a;
   }, 0);
-var duration = 45;
+var duration = 60;
 
 async function setUp() {
   var coinbase = await web3.eth.getCoinbase();
@@ -83,7 +83,7 @@ async function setUp() {
           var newPosts = json_db.posts.filter(p => {
             return moment().diff(moment(p.date), "seconds") < duration;
           });
-          newPosts.forEach(p => db.posts.unshift(p));
+          newPosts.reverse().forEach(p => db.posts.unshift(p));
         }
       });
     }
@@ -113,7 +113,7 @@ async function setUp() {
       post_hash: h.post_hash
     });
   }
-  console.log("Post Hashes", postHashes[0]);
+  // console.log("Post Hashes", postHashes[0]);
 }
 
 // Check if db from Chain == db from mydb.json
@@ -205,6 +205,7 @@ app.get("/posts", (req, res) => {
 // Post newPosts to Contract
 setInterval(() => {
   var checkTime = moment();
+  console.log("LENGTH", db.posts.length)
   var newPosts = db.posts.filter(p => {
     var sub = checkTime.diff(moment(p.date), "seconds");
     if (sub < duration) console.log(sub);
@@ -326,11 +327,11 @@ app.post("/posts", async (req, res) => {
     res.json(newPost);
   }
 
-  //////////////////// Testing part
-  let id = await contract.methods.getPostLength().call();
-  console.log(id);
-  console.log(await contract.methods.getPosts(id - 1).call());
-  //////////////////// Testing part
+  // //////////////////// Testing part
+  // let id = await contract.methods.getPostLength().call();
+  // console.log(id);
+  // console.log(await contract.methods.getPosts(id - 1).call());
+  // //////////////////// Testing part
 });
 
 // Delete
