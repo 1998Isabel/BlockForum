@@ -30,19 +30,19 @@ npm run dev
 #### Open Metamask
 ![](https://i.imgur.com/4TZrDhj.png)
 
-#### Change Network
-![](https://i.imgur.com/tKBAmP8.png)
-
 #### Import using account seed phrase
-From ganache
+From ganache (Terminal 1)
 ![](https://i.imgur.com/OyNh5pT.png)
 
 ![](https://i.imgur.com/YGDsjvH.png)
 
+#### Change Network
+![](https://i.imgur.com/tKBAmP8.png)
+
 #### Import Account 1 by private key
 ![](https://i.imgur.com/NEWDMwW.png)
 
-Go to ganache terminal (Terminal 1)
+From ganache (Terminal 1)
 **Copy the underlined private key**
 ![](https://i.imgur.com/ZS8BTMz.png)
 
