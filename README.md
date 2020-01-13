@@ -3,7 +3,7 @@ Demo video: https://youtu.be/pwI22UQgD6c
 
 ## Quick Start
 ### Installation
-```python
+```
 git clone https://github.com/1998Isabel/NMLabFinalProject.git
 
 cd NMLabFinalProject
@@ -15,7 +15,7 @@ npm install
 npm run client-install 
 ```
 ### Run Application
-```python
+```bash
 # Terminal 1: 
 ## Run ganache
 ganache-cli -l 0xfffffffffffff -g 0x01 --seed test -b 1
