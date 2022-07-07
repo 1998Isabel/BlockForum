@@ -26,7 +26,7 @@
     "express": "^4.17.1",
     "formidable": "^1.2.1",
     "ipfs": "^0.40.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "react-bootstrap": "^1.0.0-beta.16",
     "uuid": "^3.3.3",
     "web3": "1.2.0",
