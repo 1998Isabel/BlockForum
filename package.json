@@ -23,7 +23,7 @@
   "dependencies": {
     "concurrently": "^5.0.0",
     "ethereumjs-tx": "^2.1.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "formidable": "^1.2.1",
     "ipfs": "^0.40.0",
     "moment": "^2.24.0",
